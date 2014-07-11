@@ -7,7 +7,7 @@ class PlatformUtils
 {
 public:
 	static char currKeyPressed();
-	static void sleep(double seconds);
+	static void waitForNextFrame(double seconds);
 };
 
 #endif

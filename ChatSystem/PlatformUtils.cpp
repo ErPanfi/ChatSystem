@@ -1,8 +1,8 @@
 #include "PlatformUtils.h"
 
 #if PLATFORM==PLATFORM_WIN
+#include <Windows.h>
 #include <conio.h>
-#include <dos.h>
 #endif
 
 // returns 0 if no key pressed
@@ -17,12 +17,11 @@ char PlatformUtils::currKeyPressed()
 	return 0;
 }
 
-void PlatformUtils::sleep(double seconds)
+void PlatformUtils::waitForNextFrame(double seconds)
 {
-	if(seconds > 0)
-	{
 #if PLATFORM == PLATFORM_WIN
-	sleep(seconds);
+		Sleep(seconds*1000);
 #endif
-	}
 }
+
+
