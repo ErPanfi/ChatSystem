@@ -13,10 +13,48 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\NetworkHandling">
+      <UniqueIdentifier>{4da4fd5a-8682-4356-98ee-f7e9b8a32a9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Network">
+      <UniqueIdentifier>{8cff1fe6-918b-4d4c-b8f2-1443bccd8436}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Packets">
+      <UniqueIdentifier>{9c80f182-65cf-487e-9f11-c5b1f8695944}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Packets">
+      <UniqueIdentifier>{b5cfccc3-f441-41aa-93e5-d613a83d310d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Address.cpp">
+      <Filter>Source Files\NetworkHandling</Filter>
+    </ClCompile>
+    <ClCompile Include="ISocket.cpp">
+      <Filter>Source Files\NetworkHandling</Filter>
+    </ClCompile>
+    <ClCompile Include="WinSocket.cpp">
+      <Filter>Source Files\NetworkHandling</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Address.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="ISocket.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="WinSocket.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformDetection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Socket.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
