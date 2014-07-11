@@ -80,6 +80,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Address.cpp" />
+    <ClCompile Include="PlatformUtils.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ISocket.cpp" />
     <ClCompile Include="MessageReceiver.cpp" />
@@ -88,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Address.h" />
+    <ClInclude Include="PlatformUtils.h" />
     <ClInclude Include="ISocket.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="MessageReceiver.h" />

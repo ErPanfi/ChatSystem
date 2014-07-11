@@ -3,10 +3,11 @@
 
 #include "PlatformDetection.h"
 
-class InputManager
+class PlatformUtils
 {
 public:
-	char currKeyPressed() const;
+	static char currKeyPressed();
+	static void sleep(double seconds);
 };
 
 #endif
