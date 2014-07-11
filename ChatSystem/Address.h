@@ -15,15 +15,6 @@ private:
 
 public:
 	
-	Address(t_address address, t_port port);
-	Address();
-	Address(	t_octet o1,
-				t_octet o2,
-				t_octet o3, 
-				t_octet o4,
-				t_port port
-				);
-
 	//these are trivial getters, can be inlined
 	inline t_address getAddress() const	{ return m_address; }
 	inline t_octet getO1() const		{ return (t_octet) (m_address >> 24); }
