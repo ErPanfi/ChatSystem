@@ -83,16 +83,14 @@
     <ClCompile Include="PlatformUtils.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ISocket.cpp" />
-    <ClCompile Include="MessageReceiver.cpp" />
-    <ClCompile Include="Packet.cpp" />
+    <ClCompile Include="ChatSystem.cpp" />
     <ClCompile Include="WinSocket.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Address.h" />
     <ClInclude Include="PlatformUtils.h" />
     <ClInclude Include="ISocket.h" />
-    <ClInclude Include="Packet.h" />
-    <ClInclude Include="MessageReceiver.h" />
+    <ClInclude Include="ChatSystem.h" />
     <ClInclude Include="PlatformDetection.h" />
     <ClInclude Include="Socket.h" />
     <ClInclude Include="WinSocket.h" />

@@ -48,14 +48,11 @@
     <ClCompile Include="WinSocket.cpp">
       <Filter>Network\Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Packet.cpp">
-      <Filter>ChatData\Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="MessageReceiver.cpp">
-      <Filter>ChatData\Sources</Filter>
-    </ClCompile>
     <ClCompile Include="PlatformUtils.cpp">
       <Filter>Misc\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatSystem.cpp">
+      <Filter>ChatData\Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -74,14 +71,11 @@
     <ClInclude Include="PlatformDetection.h">
       <Filter>Misc\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Packet.h">
-      <Filter>ChatData\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="MessageReceiver.h">
-      <Filter>ChatData\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="PlatformUtils.h">
       <Filter>Misc\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatSystem.h">
+      <Filter>ChatData\Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
