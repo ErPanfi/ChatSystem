@@ -1,5 +1,7 @@
 #include "ChatSystem.h"
 
+#include<iostream>
+
 ChatSystem::t_peerData ChatSystem::s_peerList[MAX_PEER_LIST_SIZE];
 unsigned short ChatSystem::s_nPeer = 0;
 Socket ChatSystem::s_socket;
@@ -7,8 +9,15 @@ Socket ChatSystem::s_socket;
 
 bool ChatSystem::initChatSystem(unsigned short port)
 {
-	s_socket.initializeSocketSystem();
-	return s_socket.open(port);
+	if(s_socket.initializeSocketSystem())
+	{
+		std::cout << "Listening on port " << port << std::endl;
+		return s_socket.open(port);
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool ChatSystem::sendMessage(t_message message)
@@ -19,7 +28,9 @@ bool ChatSystem::sendMessage(t_message message)
 
 	for (unsigned short i = 0; i < ChatSystem::s_nPeer; ++i)
 	{
-		s_socket.send(ChatSystem::s_peerList[i].peerAddress, &packetPayload, sizeof(t_packetPayload));
+		Address::t_addressStr addressStr;
+		s_peerList[i].peerAddress.getAddressStr(addressStr);
+		s_socket.send(s_peerList[i].peerAddress, &packetPayload, sizeof(t_packetPayload));
 	}
 
 	//TODO handle resends
@@ -28,7 +39,10 @@ bool ChatSystem::sendMessage(t_message message)
 
 void ChatSystem::addPeer(t_peerData peerData)
 {
-	ChatSystem::s_peerList[ChatSystem::s_nPeer++] = peerData;
+	s_peerList[s_nPeer++] = peerData;
+	Address::t_addressStr addressStr;
+	peerData.peerAddress.getAddressStr(addressStr) ;
+	std::cout << "Added " << addressStr << " to peer list." << std::endl;
 }
 
 bool ChatSystem::receiveMessage(t_message &message)
@@ -36,8 +50,12 @@ bool ChatSystem::receiveMessage(t_message &message)
 	t_packetPayload packetPayload;
 	Address senderAddress;
 
-	if(s_socket.receive(senderAddress, &packetPayload, sizeof(packetPayload)))
+	//if(s_socket.receive(senderAddress, &packetPayload, sizeof(t_packetPayload))>0)
+	int returnValue = s_socket.receive(senderAddress, &packetPayload, sizeof(t_packetPayload));
+	if(returnValue > 0)
 	{
+		Address::t_addressStr addressStr;
+		senderAddress.getAddressStr(addressStr);
 		switch (packetPayload.type)
 		{
 		case e_packetType::Message:
@@ -47,6 +65,14 @@ bool ChatSystem::receiveMessage(t_message &message)
 			addPeer(packetPayload.peerData);
 			break;
 		}
+	}
+	else if(returnValue == 0)
+	{
+		std::cout << "Remote connection closed gracefully" << std::endl;
+	}
+	else if((returnValue = WSAGetLastError()) != WSAEWOULDBLOCK)
+	{
+		std::cerr << "Error occured on receiving : " << returnValue << std::endl;
 	}
 
 	return false;
