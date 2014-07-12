@@ -5,7 +5,8 @@
 #include "ChatSystem.h"
 #include "PlatformUtils.h"
 
-const double FRAME_LEN = 1.0/30.0;
+const double FPS_CAP = 10.0;
+const double FRAME_LEN = 1.0/FPS_CAP;
 
 int main(int argc, char* argv[])
 {

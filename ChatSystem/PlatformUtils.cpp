@@ -20,7 +20,7 @@ char PlatformUtils::currKeyPressed()
 void PlatformUtils::waitForNextFrame(double seconds)
 {
 #if PLATFORM == PLATFORM_WIN
-		Sleep(seconds*1000);
+		Sleep((unsigned int)(seconds*1000));
 #endif
 }
 
