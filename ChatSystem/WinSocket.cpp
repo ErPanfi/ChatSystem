@@ -77,7 +77,7 @@ bool WinSocket::send(const Address& receiver, const void* data, int size)
 int WinSocket::receive(Address& sender, void* data, int size)
 {
 	sockaddr_in fromAddress;
-	int fromLen;
+	int fromLen = sizeof(sockaddr_in);
 	int receivedBytes = recvfrom(m_socketHandle, (char*) data, size, 0, (sockaddr*) &fromAddress, &fromLen);
 
 	if(receivedBytes > 0)
