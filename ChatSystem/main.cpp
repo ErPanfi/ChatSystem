@@ -73,8 +73,7 @@ int main(int argc, char* argv[])
 				break;
 			}
 		}
-
-		if(ChatSystem::receiveMessage(message))
+		else if(ChatSystem::receiveMessage(message))
 		{
 			if(message.message != '\n')
 			{
