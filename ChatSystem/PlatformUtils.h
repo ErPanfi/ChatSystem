@@ -6,6 +6,7 @@
 class PlatformUtils
 {
 public:
+	static const char NO_CHAR_READ = '\0';
 	static char currKeyPressed();
 	static void waitForNextFrame(double seconds);
 };
