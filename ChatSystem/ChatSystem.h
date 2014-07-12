@@ -10,6 +10,8 @@ class ChatSystem
 public:
 	static const unsigned short MAX_NICKNAME_LEN = 100;
 
+	static const char CHAT_PROTO_ID[4];
+
 	typedef struct PeerDataStruct
 	{
 		Address peerAddress;
@@ -29,6 +31,7 @@ public:
 
 	typedef struct PacketPayloadStruct
 	{
+		char protoID[4];
 		e_packetType type;
 		union //anonymous union with packet payload
 		{

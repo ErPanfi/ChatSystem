@@ -5,6 +5,7 @@
 ChatSystem::t_peerData ChatSystem::s_peerList[MAX_PEER_LIST_SIZE];
 unsigned short ChatSystem::s_nPeer = 0;
 Socket ChatSystem::s_socket;
+const char ChatSystem::CHAT_PROTO_ID[4] = "MCS";
 
 
 bool ChatSystem::initChatSystem(unsigned short port)
@@ -23,6 +24,7 @@ bool ChatSystem::initChatSystem(unsigned short port)
 bool ChatSystem::sendMessage(t_message message)
 {
 	t_packetPayload packetPayload;
+	strcpy_s(packetPayload.protoID, CHAT_PROTO_ID);
 	packetPayload.type = e_packetType::Message;
 	packetPayload.message = message;
 
@@ -54,16 +56,19 @@ bool ChatSystem::receiveMessage(t_message &message)
 	int returnValue = s_socket.receive(senderAddress, &packetPayload, sizeof(t_packetPayload));
 	if(returnValue > 0)
 	{
-		Address::t_addressStr addressStr;
-		senderAddress.getAddressStr(addressStr);
-		switch (packetPayload.type)
+		if(strcmp(CHAT_PROTO_ID, packetPayload.protoID) == 0)	//this will discard udp packets sent to this port from other programs
 		{
-		case e_packetType::Message:
-			message = packetPayload.message;
-			return true;
-		case e_packetType::PeerData:
-			addPeer(packetPayload.peerData);
-			break;
+			Address::t_addressStr addressStr;
+			senderAddress.getAddressStr(addressStr);
+			switch (packetPayload.type)
+			{
+			case e_packetType::Message:
+				message = packetPayload.message;
+				return true;
+			case e_packetType::PeerData:
+				addPeer(packetPayload.peerData);
+				break;
+			}
 		}
 	}
 	else if(returnValue == 0)
