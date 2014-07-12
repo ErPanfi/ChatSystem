@@ -1,27 +1,102 @@
 //platform detection first
 
-#define PLATFORM_WINDOWS  1
-#define PLATFORM_MAC      2
-#define PLATFORM_UNIX     3
+#include <iostream>
+#include <time.h>
+#include "ChatSystem.h"
+#include "PlatformUtils.h"
 
-#if defined(_WIN32)
-#define PLATFORM PLATFORM_WINDOWS
-#elif defined(__APPLE__)
-#define PLATFORM PLATFORM_MAC
-#else
-#define PLATFORM PLATFORM_UNIX
-#endif
+const double FRAME_LEN = 1.0/30.0;
 
-//then include correct libraries
-#if PLATFORM == PLATFORM_WINDOWS
-    #include <winsock2.h>
-
-#elif PLATFORM == PLATFORM_MAC || 
-        PLATFORM == PLATFORM_UNIX
-
-		//this will be done if enough time remains
-#endif
-
-int main()
+int main(int argc, char* argv[])
 {
+	if(argc < 2)
+	{
+		std::cout << "Missing port number!!!" << std::endl;
+		return -1;
+	}
+	else if (argc < 3)
+	{
+		std::cout << "Missing target port number!!!" << std::endl;
+		return -1;
+	}
+
+	unsigned short port = atoi(argv[1]);
+
+	if(!ChatSystem::initChatSystem(port))
+	{
+		std::cerr << "Cannot open socket on port " << port << std::endl;
+		return -2;
+	}
+
+	port = atoi(argv[2]);
+	
+	//TODO now manually add other peer, implement automatic discovery
+	ChatSystem::t_peerData peerData;
+	strcpy_s(peerData.nickname, "The other one.");
+	peerData.peerAddress.init(127,0,0,1,port);
+
+	ChatSystem::addPeer(peerData);
+
+	time_t lastFrameStart, currTime;
+
+	bool doLoop = true;
+
+	while(doLoop)
+	{
+		ChatSystem::t_message message;
+		time(&lastFrameStart);
+		char currPressedKey = PlatformUtils::currKeyPressed();
+		if(currPressedKey != PlatformUtils::NO_CHAR_READ)
+		{
+			switch (currPressedKey)
+			{
+			case 27:	//ESC key pressed
+				doLoop = false;
+				break;
+			default:
+				
+				if(currPressedKey != 13)
+				{
+					message.message = currPressedKey;
+					std::cout << currPressedKey;
+				}
+				else
+				{
+					message.message = '\n';
+					std::cout << std::endl;
+				}
+				
+				if(!ChatSystem::sendMessage(message))
+				{
+					std::cerr << "Failed to send message :(" << currPressedKey << std::endl;
+				}
+				break;
+			}
+		}
+		else if(ChatSystem::receiveMessage(message))
+		{
+			if(message.message != '\n')
+			{
+				std::cout << message.message;
+			}
+			else
+			{
+				std::cout << std::endl;
+			}
+		}
+
+		time(&currTime);
+		double toSleep = FRAME_LEN - difftime(currTime, lastFrameStart);
+		if(toSleep < FRAME_LEN && toSleep > 0)
+		{
+			PlatformUtils::waitForNextFrame(toSleep);
+		}
+	}
+
+	std::cout << "Goodbye!" << std::endl;
+	
+	getchar();
+
+	return 0;
 }
+
