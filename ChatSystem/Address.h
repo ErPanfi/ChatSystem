@@ -7,6 +7,7 @@ public:
 	typedef unsigned int t_address;
 	typedef unsigned short t_port;
 	typedef unsigned char t_octet;
+	typedef char t_addressStr[30];
 
 private:
 	t_address m_address;
@@ -22,6 +23,7 @@ public:
 	inline t_octet getO3() const		{ return (t_octet) (m_address >> 8); }
 	inline t_octet getO4() const		{ return (t_octet) (m_address); }
 	inline t_port getPort() const		{ return m_port; }
+	void getAddressStr(t_addressStr address) const;
 
 	void init(t_address address, t_port port);
 	void init(t_octet o1, t_octet o2, t_octet o3, t_octet o4, t_port port);
