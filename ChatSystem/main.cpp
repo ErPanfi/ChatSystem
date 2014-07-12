@@ -5,22 +5,22 @@
 #include "ChatSystem.h"
 #include "PlatformUtils.h"
 
-const double FRAME_LEN = 1.0/60.0;
+const double FRAME_LEN = 1.0/30.0;
 
 int main(int argc, char* argv[])
 {
-	if(argc < 1)
+	if(argc < 2)
 	{
 		std::cout << "Missing port number!!!" << std::endl;
 		return -1;
 	}
-	else if (argc < 2)
+	else if (argc < 3)
 	{
 		std::cout << "Missing target port number!!!" << std::endl;
 		return -1;
 	}
 
-	unsigned short port = atoi(argv[0]);
+	unsigned short port = atoi(argv[1]);
 
 	if(!ChatSystem::initChatSystem(port))
 	{
@@ -28,11 +28,11 @@ int main(int argc, char* argv[])
 		return -2;
 	}
 
-	port = atoi(argv[1]);
+	port = atoi(argv[2]);
 	
 	//TODO now manually add other peer, implement automatic discovery
 	ChatSystem::t_peerData peerData;
-	strcpy(peerData.nickname, "The other one.");
+	strcpy_s(peerData.nickname, "The other one.");
 	peerData.peerAddress.init(127,0,0,1,port);
 
 	ChatSystem::addPeer(peerData);
@@ -45,8 +45,8 @@ int main(int argc, char* argv[])
 	{
 		ChatSystem::t_message message;
 		time(&lastFrameStart);
-		char currPressedKey;
-		if(currPressedKey = PlatformUtils::currKeyPressed())
+		char currPressedKey = PlatformUtils::currKeyPressed();
+		if(currPressedKey != PlatformUtils::NO_CHAR_READ)
 		{
 			switch (currPressedKey)
 			{
@@ -54,15 +54,36 @@ int main(int argc, char* argv[])
 				doLoop = false;
 				break;
 			default:
-				message.message = currPressedKey;
-				ChatSystem::sendMessage(message);	
+				
+				if(currPressedKey != 13)
+				{
+					message.message = currPressedKey;
+					std::cout << currPressedKey;
+				}
+				else
+				{
+					message.message = '\n';
+					std::cout << std::endl;
+				}
+				
+				if(!ChatSystem::sendMessage(message))
+				{
+					std::cerr << "Failed to send message :(" << currPressedKey << std::endl;
+				}
 				break;
 			}
 		}
 
 		if(ChatSystem::receiveMessage(message))
 		{
-			std::cout << message.message;
+			if(message.message != '\n')
+			{
+				std::cout << message.message;
+			}
+			else
+			{
+				std::cout << std::endl;
+			}
 		}
 
 		time(&currTime);
