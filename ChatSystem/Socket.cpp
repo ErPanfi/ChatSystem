@@ -1,27 +1,36 @@
 
-#include "WinSocket.h"
+#include "Socket.h"
+#include "PlatformDetection.h"
 
 //this can compile only under Win
 #if PLATFORM == PLATFORM_WIN
+#include <WinSock2.h>
+#endif
 
-bool WinSocket::initializeSocketSystem()
+bool Socket::initializeSocketSystem()
 {
+#if PLATFORM == PLATFORM_WIN
 		WSADATA wsaData;
 		return (WSAStartup(MAKEWORD(2,2), &wsaData) == NO_ERROR);	//using socket version 2.2 ... why this version? No idea ^.^'
+#else
+	return true;
+#endif
 }
 
-void WinSocket::cleanupSocketSystem()
+void Socket::cleanupSocketSystem()
 {
+#if PLATFORM == PLATFORM_WIN
 	WSACleanup();
+#endif
 }
 
-WinSocket::WinSocket()
+Socket::Socket()
 	//TODO : m_socketHandle(INVALID_SOCKET) doesn't work... why?
 {
 	m_socketHandle = INVALID_SOCKET;
 }
 
-bool WinSocket::open(unsigned short port)
+bool Socket::open(unsigned short port)
 {
 	m_socketHandle = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
@@ -51,18 +60,20 @@ bool WinSocket::open(unsigned short port)
 	return true;
 }
 
-void WinSocket::close()
+void Socket::close()
 {
+#if PLATFORM == PLATFORM_WIN
 	closesocket(m_socketHandle);
+#endif
 	m_socketHandle = INVALID_SOCKET;
 }
 
-bool WinSocket::isOpen() const
+bool Socket::isOpen() const
 {
 	return m_socketHandle != INVALID_SOCKET;
 }
 
-bool WinSocket::send(const Address& receiver, const void* data, int size)
+bool Socket::send(const Address& receiver, const void* data, int size)
 {
 	sockaddr_in address;
 	address.sin_family = AF_INET;
@@ -74,7 +85,7 @@ bool WinSocket::send(const Address& receiver, const void* data, int size)
 	return bytesSent == size;
 }
 
-int WinSocket::receive(Address& sender, void* data, int size)
+int Socket::receive(Address& sender, void* data, int size)
 {
 	sockaddr_in fromAddress;
 	int fromLen = sizeof(sockaddr_in);
@@ -84,8 +95,18 @@ int WinSocket::receive(Address& sender, void* data, int size)
 	{
 		sender.init(ntohl(fromAddress.sin_addr.S_un.S_addr), ntohs(fromAddress.sin_port));
 	}
+	else
+	{
+#if PLATFORM == PLATFORM_WIN
+		receivedBytes = WSAGetLastError();
+		switch (receivedBytes)
+		{
+		case WSAEWOULDBLOCK:	//this is not an error: socket has no data, so it would block execution, but it can't because it's unblocking
+			receivedBytes = 0;
+			break;
+		}
+#endif
+	}
 
 	return receivedBytes;
 }
-
-#endif	//platform check
