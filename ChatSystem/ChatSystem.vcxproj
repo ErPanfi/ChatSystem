@@ -80,20 +80,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Address.cpp" />
+    <ClCompile Include="DataManager.cpp" />
+    <ClCompile Include="Message.cpp" />
+    <ClCompile Include="Packable.cpp" />
+    <ClCompile Include="User.cpp" />
     <ClCompile Include="PlatformUtils.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="ISocket.cpp" />
-    <ClCompile Include="ChatSystem.cpp" />
-    <ClCompile Include="WinSocket.cpp" />
+    <ClCompile Include="Transmitter.cpp" />
+    <ClCompile Include="Socket.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Address.h" />
+    <ClInclude Include="Message.h" />
+    <ClInclude Include="Packable.h" />
+    <ClInclude Include="User.h" />
     <ClInclude Include="PlatformUtils.h" />
-    <ClInclude Include="ISocket.h" />
-    <ClInclude Include="ChatSystem.h" />
+    <ClInclude Include="Transmitter.h" />
     <ClInclude Include="PlatformDetection.h" />
     <ClInclude Include="Socket.h" />
-    <ClInclude Include="WinSocket.h" />
+    <ClInclude Include="DataManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
