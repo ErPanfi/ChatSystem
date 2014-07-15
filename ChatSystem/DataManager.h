@@ -25,6 +25,8 @@ private:
 public:
 	//nick g/s
 	static User* getCurrUser() { return &s_currUser; }	
+	static Address getLocalAddress() { return s_currUser.getAddress(); }
+	
 	//handle received user data
 	static void userDataReceived(User* userData);
 	static t_usersList::iterator getUserIterator() { return s_usersList.begin();}

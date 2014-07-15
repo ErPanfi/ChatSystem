@@ -12,14 +12,17 @@ class Transmitter
 
 private:
 	static Socket s_socket;
-	static Socket::t_port s_port;
-
 public:	
+	//initialization step
 	static bool initTransmitter(Socket::t_port port);
-	static bool sendDataToPeers(Packable &data);
-	static bool sendBcastData(Packable &data);
-	static bool sendDataToAddress(Packable &data, Address address);
-	static Packable* receiveData();
+	//sending primitives
+	static bool sendDataToPeers(Packable &data);	//to connected peers
+	static bool sendBcastData(Packable &data);		//to everyone on LAN
+	static bool sendDataToAddress(Packable &data, Address address);	//to specific address
+	//receive data
+	static void receiveData();
+	//update method
+	static void update(double elapsed);
 };
 
 

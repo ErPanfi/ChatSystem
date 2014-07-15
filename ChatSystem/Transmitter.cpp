@@ -1,18 +1,18 @@
 #include "Transmitter.h"
 #include "DataManager.h"
+#include "PlatformUtils.h"
 
-#include<iostream>
+#include <iostream>
+#include <sstream>
 
 Socket Transmitter::s_socket;
-Socket::t_port Transmitter::s_port;
 
 bool Transmitter::initTransmitter(Socket::t_port port)
 {
-	if(s_socket.initializeSocketSystem())
+	if(s_socket.initializeSocketSystem() && s_socket.open(port))
 	{
-		s_port = port;
-		std::cout << "Listening on port " << port << std::endl;
-		return s_socket.open(port);
+		DataManager::getCurrUser() -> setAddress(Address(0, port));
+		return true;
 	}
 	else
 	{
@@ -45,20 +45,27 @@ bool Transmitter::sendDataToAddress(Packable &data, Address address)
 bool Transmitter::sendBcastData(Packable &data)
 {
 	Address address;
-	address.init(255,255,255,255, s_port);	//using global BCast address: routers don't forward these packets to the outer world
+	address.init(255,255,255,255, DataManager::getCurrUser() -> getAddress().getPort());	//using global BCast address: routers don't forward these packets to the outer world
 	char packetData[Packable::MAX_PACKET_SIZE];
 	int packetSize = data.pack(packetData);
 
 	return s_socket.send(address, packetData, packetSize);
 }
 
-Packable* Transmitter::receiveData()
+void Transmitter::update(double elapsed)
+{
+	receiveData();
+}
+
+void Transmitter::receiveData()
 {
 	Address senderAddress;
 	char packetData[Packable::MAX_PACKET_SIZE];
 	int res;
 	Message *messageData = NULL;
 	User *userData = NULL;
+
+	std::stringstream message;
 
 	//if(s_socket.receive(senderAddress, &packetPayload, sizeof(t_packetPayload))>0)
 	int packetSize = s_socket.receive(senderAddress, packetData, Packable::MAX_PACKET_SIZE);
@@ -76,11 +83,12 @@ Packable* Transmitter::receiveData()
 			userData -> unpack(packetData, packetSize);
 			DataManager::userDataReceived(userData);			
 			break;
-		default:	//unrecognized packet type
-			return false;
+		default:
+			
+			message << "Unrecognized packet from " << senderAddress.toString() ;
+			PlatformUtils::log(message.str());
+			break;
 		}
 		
 	}
-
-	return false;
 }

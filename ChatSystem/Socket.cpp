@@ -42,7 +42,7 @@ bool Socket::open(t_port port)
 	//bind socket to port
 	sockaddr_in inAddress;
 	inAddress.sin_family = AF_INET;
-	inAddress.sin_addr.S_un.S_addr = INADDR_ANY;
+	inAddress.sin_addr.S_un.S_addr = INADDR_ANY;	//my local address
 	inAddress.sin_port = htons(port);
 
 	if(bind(m_socketHandle, (const sockaddr*) &inAddress, sizeof(sockaddr_in)) == SOCKET_ERROR)
