@@ -33,10 +33,14 @@ void User::unpack(char buffer[], int bufSize)
 	}
 
 	m_nick[j] = '\0';
-
 }
 
 void User::refreshFromOther(User &other)
 {
-	strcpy_s(m_nick, other.m_nick);
+	setNick(other.m_nick);
+}
+
+std::string User::toString() const
+{
+	return std::string(m_nick) + "(" + m_address.toString() + ")";
 }
