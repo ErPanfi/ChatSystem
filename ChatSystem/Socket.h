@@ -9,8 +9,9 @@ class Socket
 protected:
 	unsigned int m_socketHandle;
 public:
+	typedef unsigned short t_port;
 	Socket();
-	bool open(unsigned short port);
+	bool open(t_port port);
 	void close();
 	bool isOpen() const;
 	bool send(const Address& receiver, const void* data, int size);

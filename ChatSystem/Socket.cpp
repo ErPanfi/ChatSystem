@@ -30,7 +30,7 @@ Socket::Socket()
 	m_socketHandle = INVALID_SOCKET;
 }
 
-bool Socket::open(unsigned short port)
+bool Socket::open(t_port port)
 {
 	m_socketHandle = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
@@ -53,6 +53,13 @@ bool Socket::open(unsigned short port)
 	//setting socket as non-blocking
 	DWORD nb = 1;
 	if(ioctlsocket(m_socketHandle, FIONBIO, &nb) != NO_ERROR)	
+	{
+		return false;
+	}
+
+	//setting socket as broadcasting
+	const char bcast = 1;
+	if(setsockopt(m_socketHandle, SOL_SOCKET, SO_BROADCAST, &bcast, sizeof(const char)) != NO_ERROR)
 	{
 		return false;
 	}
