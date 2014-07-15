@@ -11,9 +11,9 @@
 char PlatformUtils::currKeyPressed()
 {
 #if PLATFORM == PLATFORM_WIN
-	if(kbhit())
+	if(_kbhit())
 	{
-		return getch();
+		return _getch();
 	}
 #endif
 	return 0;
