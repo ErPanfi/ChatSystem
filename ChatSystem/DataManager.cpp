@@ -1,22 +1,29 @@
 #include "DataManager.h"
+#include "Transmitter.h"
+#include "PlatformUtils.h"
 
 DataManager::t_usersList DataManager::s_usersList;
 DataManager::t_messagesList DataManager::s_messagesList;
+User DataManager::s_currUser;
+double DataManager::s_userBcastTimer = 0;
 
+const double DataManager::USER_BCAST_PERIOD = 120.0;
 
-void DataManager::userDataReceived(Address senderAddress, User* userData)
+void DataManager::userDataReceived(User* userData)
 {
 	t_usersList::iterator iter;
-	for(iter = s_usersList.begin(); iter != s_usersList.end() && (**iter).getAddress() == senderAddress; ++iter);
+	Address senderAddress = userData -> getAddress();	//prevent continuous method calling in iterations
+	for(iter = s_usersList.begin(); iter != s_usersList.end() && (**iter).getAddress() == senderAddress; ++iter);	//
 
-	if((**iter).getAddress() == senderAddress)	//existing user!
+	if(iter != s_usersList.end())	//existing user!
 	{
+		PlatformUtils::log("Fresh data for "+userData->toString());
 		(**iter).refreshFromOther(*userData);	//refresh with received data
 		delete userData;						//delete received data
 	}
 	else	//not found: must create an entry for it
 	{
-		userData -> setAddress(senderAddress);
+		PlatformUtils::log("New user! "+userData -> toString());
 		s_usersList.push_front(userData);
 	}
 }
