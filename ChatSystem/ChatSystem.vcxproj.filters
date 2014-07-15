@@ -45,9 +45,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Misc\Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Address.cpp">
       <Filter>Network\Sources</Filter>
     </ClCompile>
@@ -72,6 +69,7 @@
     <ClCompile Include="DataManager.cpp">
       <Filter>ChatSystems\Sources</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Address.h">
