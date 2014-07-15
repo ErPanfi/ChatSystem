@@ -2,32 +2,57 @@
 #include "Transmitter.h"
 #include "PlatformUtils.h"
 
+#include <iostream>
+#include <sstream>
+
 DataManager::t_usersList DataManager::s_usersList;
 DataManager::t_messagesList DataManager::s_messagesList;
 User DataManager::s_currUser;
 double DataManager::s_userBcastTimer = 0;
 
-const double DataManager::USER_BCAST_PERIOD = 120.0;
+const double DataManager::USER_BCAST_PERIOD = 10.0;
 
 void DataManager::userDataReceived(User* userData)
 {
-	t_usersList::iterator iter;
-	Address senderAddress = userData -> getAddress();	//prevent continuous method calling in iterations
-	for(iter = s_usersList.begin(); iter != s_usersList.end() && (**iter).getAddress() == senderAddress; ++iter);	//
+	std::stringstream message;	//for logging 
+	Address currUserAddress = s_currUser.getAddress();
 
-	if(iter != s_usersList.end())	//existing user!
+	//first: if address is MY local address these are my informations, so we can discard them
+	if(currUserAddress == userData -> getAddress())
 	{
-		PlatformUtils::log("Fresh data for "+userData->toString());
-		(**iter).refreshFromOther(*userData);	//refresh with received data
-		delete userData;						//delete received data
+		message << "My data. Discard them.";
+		delete userData;
 	}
-	else	//not found: must create an entry for it
+	else if(currUserAddress.getAddress() || userData -> getNick().compare(s_currUser.getNick()) != 0)	//otherwise if my address is already compiled or this is NOT my nickname
 	{
-		PlatformUtils::log("New user! "+userData -> toString());
-		s_usersList.push_front(userData);
-		//reply to new user with your informations
-		Transmitter::sendDataToAddress(s_currUser, userData->getAddress());
+		t_usersList::iterator iter = s_usersList.find(userData);
+
+		if(iter != s_usersList.end())	//existing user!
+		{
+			message <<  "Fresh data for " << userData->toString();
+
+			(**iter).refreshFromOther(*userData);	//refresh with received data
+			delete userData;						//delete received data
+		}
+		else	//not found: must create an entry for it
+		{
+			message <<  "New user! " << userData -> toString();
+			s_usersList.insert(userData);
+			//reply to new user with your informations
+			Transmitter::sendDataToAddress(s_currUser, userData->getAddress());
+		}
 	}
+	else	//otherwise this is my host address, which I miss! :D let's save it
+	{
+		Address completeAddress = s_currUser.getAddress();	//obtain partial data from current user
+		completeAddress.setAddress(userData -> getAddress().getAddress());	//manually set IP
+		s_currUser.setAddress(completeAddress);
+		message << "Obtained local address from bcast : " << s_currUser.getAddress().toString();
+		delete userData;
+	}
+
+	PlatformUtils::log(message.str());
+
 }
 
 void DataManager::messageReceived(Address senderAddress, Message* messageData)
@@ -57,5 +82,14 @@ void DataManager::update(double elapsed)
 		s_userBcastTimer = USER_BCAST_PERIOD;
 
 		Transmitter::sendBcastData(s_currUser);
+	}
+}
+
+void DataManager::printUsers()
+{
+	std::cout << "Connected users: " << std::endl << s_currUser.toString() << std::endl;
+	for(t_usersList::iterator iter = s_usersList.begin(); iter != s_usersList.end(); ++iter)
+	{
+		std::cout << (*iter) -> toString() << std::endl;
 	}
 }

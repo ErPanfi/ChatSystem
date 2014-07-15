@@ -5,12 +5,13 @@
 #include "Message.h"
 
 #include <list>
+#include <set>
 #include <string>
 
 class DataManager
 {
 public:
-	typedef std::list<User*> t_usersList;
+	typedef std::set<User*, UserComparator> t_usersList;
 	typedef std::list<Message*> t_messagesList;
 
 	static const double USER_BCAST_PERIOD;
@@ -31,6 +32,8 @@ public:
 	static void userDataReceived(User* userData);
 	static t_usersList::iterator getUserIterator() { return s_usersList.begin();}
 	static t_usersList::iterator getUserIteratorEnd() { return s_usersList.end(); }
+	static void printUsers();
+
 	//handle received message data
 	static void messageReceived(Address senderAddress, Message* messageData);
 	static t_messagesList::iterator getMessageIterator() { return s_messagesList.begin();}

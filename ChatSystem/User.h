@@ -41,6 +41,11 @@ public:
 	std::string toString() const;
 };
 
+struct UserComparator
+{
+	bool operator()(const User* const lhs , const User* const rhs) const { return lhs -> getAddress() < rhs -> getAddress(); }
+};
+
 
 
 #endif
