@@ -1,6 +1,6 @@
 #include "Address.h"
 
-#include <stdlib.h>
+#include <sstream>
 
 void Address::init(t_address address, t_port port)
 {
@@ -16,17 +16,9 @@ void Address::init(t_octet o1, t_octet o2, t_octet o3, t_octet o4, t_port port)
 
 std::string Address::toString() const
 {
-	std::string ret;
-	ret += getO1();
-	ret += '.';
-	ret += getO2();
-	ret += '.';
-	ret += getO3();
-	ret += '.';
-	ret += getO4();
-	ret += ':';
-	ret += m_port;
+	std::stringstream ret;
 
+	ret << getO1() << "." << getO2() << "." << getO3() << "." << getO4() << ":" << m_port;
 
-	return ret;
+	return ret.str();
 }
