@@ -5,9 +5,9 @@ int User::pack(char buffer[]) const
 	char* bufferSentinel = buffer;
 	strcpy_s(bufferSentinel, CHAT_PROTO_NBYTES, CHAT_PROTO_ID);
 
-	bufferSentinel += CHAT_PROTO_NBYTES;
+	*(bufferSentinel += CHAT_PROTO_NBYTES) = (char)t_dataType::UserType;
+	++bufferSentinel;
 
-	*((t_dataType *)(bufferSentinel)++) = t_dataType::UserType;
 
 	//we don't send address over the internet, it will be contained in UDP packet
 
@@ -27,7 +27,7 @@ void User::unpack(char buffer[], int bufSize)
 {
 	int i, j;
 	//if we're at this point package has already been validated
-	for(j = 0, i = CHAT_PROTO_NBYTES + sizeof(t_dataType); i < bufSize && j < MAX_NICK_LEN && buffer[i] != '\0'; ++i, ++j)
+	for(j = 0, i = CHAT_PROTO_NBYTES + 1; i < bufSize && j < MAX_NICK_LEN && buffer[i] != '\0'; ++i, ++j)
 	{
 		m_nick[j] = buffer[i];
 	}

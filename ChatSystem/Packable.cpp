@@ -6,7 +6,7 @@ const char Packable::CHAT_PROTO_ID[CHAT_PROTO_NBYTES] = "MCS";
 
 int Packable::validatePackage(char buffer[], int bufSize)
 {
-	if(bufSize < CHAT_PROTO_NBYTES + sizeof(t_dataType))	//too short!
+	if(bufSize < CHAT_PROTO_NBYTES + 1)	//too short!
 	{
 		return -1;
 	}
@@ -16,5 +16,5 @@ int Packable::validatePackage(char buffer[], int bufSize)
 		return -1;
 	}
 
-	return *((t_dataType*)(buffer + CHAT_PROTO_NBYTES));
+	return *(buffer + CHAT_PROTO_NBYTES);
 }
