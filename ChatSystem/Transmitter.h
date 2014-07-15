@@ -13,8 +13,6 @@ class Transmitter
 private:
 	static Socket s_socket;
 
-	static void log(std::string message);
-
 public:	
 	static bool initTransmitter(unsigned short port);
 	static bool sendData(Packable &data);

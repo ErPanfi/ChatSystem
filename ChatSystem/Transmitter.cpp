@@ -63,9 +63,3 @@ Packable* Transmitter::receiveData()
 
 	return false;
 }
-
-void Transmitter::log(std::string message)
-{
-	std::cout << message << std::endl;
-}
-
