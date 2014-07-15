@@ -12,10 +12,13 @@ class Transmitter
 
 private:
 	static Socket s_socket;
+	static Socket::t_port s_port;
 
 public:	
-	static bool initTransmitter(unsigned short port);
-	static bool sendData(Packable &data);
+	static bool initTransmitter(Socket::t_port port);
+	static bool sendDataToPeers(Packable &data);
+	static bool sendBcastData(Packable &data);
+	static bool sendDataToAddress(Packable &data, Address address);
 	static Packable* receiveData();
 };
 

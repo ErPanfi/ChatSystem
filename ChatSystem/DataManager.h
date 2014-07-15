@@ -34,6 +34,8 @@ public:
 	static t_messagesList::iterator getMessageIterator() { return s_messagesList.begin();}
 	static t_messagesList::iterator getMessageIteratorEnd() { return s_messagesList.end();}
 	
+	//update method
+	static void update(double elapsed);
 
 	//on shutdown
 	static void cleanup();

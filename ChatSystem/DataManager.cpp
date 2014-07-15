@@ -25,6 +25,8 @@ void DataManager::userDataReceived(User* userData)
 	{
 		PlatformUtils::log("New user! "+userData -> toString());
 		s_usersList.push_front(userData);
+		//reply to new user with your informations
+		Transmitter::sendDataToAddress(s_currUser, userData->getAddress());
 	}
 }
 
@@ -43,5 +45,17 @@ void DataManager::cleanup()
 	for(t_messagesList::iterator mIter = s_messagesList.begin(); mIter != s_messagesList.end(); ++mIter)
 	{
 		delete (*mIter);
+	}
+}
+
+void DataManager::update(double elapsed)
+{
+	if((s_userBcastTimer -= elapsed) <= 0)
+	{
+		PlatformUtils::log("Sending user info on the net...");
+
+		s_userBcastTimer = USER_BCAST_PERIOD;
+
+		Transmitter::sendBcastData(s_currUser);
 	}
 }
