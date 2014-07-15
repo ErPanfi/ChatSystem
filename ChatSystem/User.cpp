@@ -8,7 +8,6 @@ int User::pack(char buffer[]) const
 	*(bufferSentinel += CHAT_PROTO_NBYTES) = (char)t_dataType::UserType;
 	++bufferSentinel;
 
-
 	//we don't send address over the internet, it will be contained in UDP packet
 
 	for(int i = 0; i < MAX_NICK_LEN && m_nick[i] != '\0' && bufferSentinel - buffer < MAX_PACKET_SIZE; ++i, ++bufferSentinel)
@@ -25,14 +24,10 @@ int User::pack(char buffer[]) const
 
 void User::unpack(char buffer[], int bufSize)
 {
-	int i, j;
 	//if we're at this point package has already been validated
-	for(j = 0, i = CHAT_PROTO_NBYTES + 1; i < bufSize && j < MAX_NICK_LEN && buffer[i] != '\0'; ++i, ++j)
-	{
-		m_nick[j] = buffer[i];
-	}
+	char* nickBuffer = buffer + CHAT_PROTO_NBYTES + 1;
 
-	m_nick[j] = '\0';
+	m_nick = User::t_nickType(nickBuffer);
 }
 
 void User::refreshFromOther(User &other)
