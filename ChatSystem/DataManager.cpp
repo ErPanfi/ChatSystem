@@ -49,9 +49,7 @@ void DataManager::userDataReceived(User* userData)
 		Address completeAddress = s_currUser.getAddress();	//obtain partial data from current user
 		completeAddress.setAddress(userData -> getAddress().getAddress());	//manually set IP
 		s_currUser.setAddress(completeAddress);
-		message << "Obtained local address from bcast : " << s_currUser.getAddress().toString();
 		delete userData;
-		PlatformUtils::log(message.str());
 	}
 }
 
@@ -63,6 +61,7 @@ void DataManager::messageReceived(Address senderAddress, Message* messageData)
 	
 	if(author != s_usersList.end())
 	{
+		messageData -> setAuthor(*author);
 		//check if already received message
 		t_messagesList::iterator check = s_messagesList.find(messageData);
 		if(check == s_messagesList.end())	//not received
@@ -125,16 +124,15 @@ void DataManager::printMessages(unsigned short howMany)
 {
 	int i;
 	t_messagesList::iterator mIter;
-	std::string output = "";
 	std::stringstream message;
 	for(i = 0, mIter = s_messagesList.begin(); i < howMany && mIter != s_messagesList.end(); ++i, ++mIter)
 	{
-		message.str("");	//empty stream
-		message << (*mIter) -> getAuthor() -> getNick() << " : " << (*mIter) -> getMessage() << std::endl;
-		output = message.str().append(output);
+		message << "(" << PlatformUtils::relativeTime2str((*mIter) -> getSendingTime()) << ") " //
+				<< (*mIter) -> getAuthor() -> getNick() << " : " //
+				<< (*mIter) -> getMessage() << std::endl;
 	}
 
-	std::cout << std::endl << "*************************************" << std::endl << std::endl << output << std::endl << "*************************************" << std::endl;
+	std::cout << std::endl << "*************************************" << std::endl << std::endl << message.str() << std::endl << "*************************************" << std::endl;
 }
 
 void DataManager::writeNewMessage()
@@ -142,7 +140,7 @@ void DataManager::writeNewMessage()
 	Message* newMessage = new Message();
 	std::string text;
 	std::cout << "Message text (max " << Message::MAX_MESSAGE_LEN << " chars): ";
-	std::cin >> text;
+	getline(std::cin, text);
 	if(!text.empty())
 	{
 		newMessage -> setMessage(text.substr(0, Message::MAX_MESSAGE_LEN));
