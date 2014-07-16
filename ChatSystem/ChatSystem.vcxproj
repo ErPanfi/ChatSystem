@@ -85,6 +85,7 @@
     <ClCompile Include="Address.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="Message.cpp" />
+    <ClCompile Include="MessageAck.cpp" />
     <ClCompile Include="Packable.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="PlatformUtils.cpp" />
@@ -95,6 +96,7 @@
   <ItemGroup>
     <ClInclude Include="Address.h" />
     <ClInclude Include="Message.h" />
+    <ClInclude Include="MessageAck.h" />
     <ClInclude Include="Packable.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="PlatformUtils.h" />

@@ -70,6 +70,9 @@
       <Filter>ChatSystems\Sources</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MessageAck.cpp">
+      <Filter>ChatData\Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Address.h">
@@ -98,6 +101,9 @@
     </ClInclude>
     <ClInclude Include="DataManager.h">
       <Filter>ChatSystems\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageAck.h">
+      <Filter>ChatData\Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
