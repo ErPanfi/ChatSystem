@@ -18,3 +18,13 @@ int Packable::validatePackage(char buffer[], int bufSize)
 
 	return *(buffer + CHAT_PROTO_NBYTES);
 }
+
+int Packable::pack(char buffer[]) const
+{
+	char* bufferSentinel = buffer;
+	strcpy_s(bufferSentinel, CHAT_PROTO_NBYTES, CHAT_PROTO_ID);
+
+	*(bufferSentinel += CHAT_PROTO_NBYTES) = (char)getDataType();
+
+	return bufferSentinel - buffer + 1;
+}

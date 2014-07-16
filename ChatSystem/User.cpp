@@ -2,11 +2,7 @@
 
 int User::pack(char buffer[]) const	
 {
-	char* bufferSentinel = buffer;
-	strcpy_s(bufferSentinel, CHAT_PROTO_NBYTES, CHAT_PROTO_ID);
-
-	*(bufferSentinel += CHAT_PROTO_NBYTES) = (char)getDataType();
-	++bufferSentinel;
+	char* bufferSentinel = buffer + Packable::pack(buffer);
 
 	//we don't send address over the internet, it will be contained in UDP packet
 
