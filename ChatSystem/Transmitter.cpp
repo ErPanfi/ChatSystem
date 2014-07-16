@@ -81,6 +81,7 @@ void Transmitter::receiveData()
 	int res;
 	Message *messageData = NULL;
 	User *userData = NULL;
+	MessageAck* messageAck = NULL;
 
 	std::stringstream message;
 
@@ -95,12 +96,22 @@ void Transmitter::receiveData()
 			messageData  -> unpack(packetData, packetSize);
 			DataManager::messageReceived(senderAddress, messageData);
 			break;
+
 		case Packable::t_dataType::UserData:	//if this has been received the sender is waiting for an ack. Send him.
 			sendDataToAddress(*DataManager::getCurrUser(), senderAddress, Packable::t_dataType::UserAck);
 		case Packable::t_dataType::UserAck:		//otherwise what we received is already an ack to our request
 			userData = new User(senderAddress);
 			userData -> unpack(packetData, packetSize);
 			DataManager::userDataReceived(userData);			
+			break;
+
+		case Packable::t_dataType::MessageNack:	//sender doesn't know me: send my data
+			sendDataToAddress(*DataManager::getCurrUser(), senderAddress, Packable::t_dataType::UserAck);
+			break;
+		case Packable::t_dataType::MessageAck:
+			messageAck = new MessageAck();
+			messageAck -> unpack(packetData, packetSize);
+			DataManager::messageAckReceived(senderAddress, messageAck);
 			break;
 		default:
 			
