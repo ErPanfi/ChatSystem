@@ -23,6 +23,8 @@ public:
 
 	static unsigned long host2network(unsigned long l);
 	static unsigned long network2host(unsigned long l);
+	static unsigned short host2network(unsigned short s);
+	static unsigned short network2host(unsigned short s);
 
 	/*
 	unsigned short packInBuffer(char c, char buffer[]);

@@ -129,6 +129,18 @@ unsigned long Socket::network2host(unsigned long l)
 	return ntohl(l);
 }
 
+unsigned short Socket::host2network(unsigned short s)
+{
+	return htons(s);
+}
+
+unsigned short Socket::network2host(unsigned short s)
+{
+	return ntohs(s);
+}
+
+
+
 /*
 unsigned short Socket::packInBuffer(char c, char buffer[])
 {
