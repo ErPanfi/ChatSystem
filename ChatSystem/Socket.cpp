@@ -9,6 +9,7 @@
 
 bool Socket::initializeSocketSystem()
 {
+
 #if PLATFORM == PLATFORM_WIN
 		WSADATA wsaData;
 		return (WSAStartup(MAKEWORD(2,2), &wsaData) == NO_ERROR);	//using socket version 2.2 ... why this version? No idea ^.^'
@@ -117,3 +118,69 @@ int Socket::receive(Address& sender, void* data, int size)
 
 	return receivedBytes;
 }
+
+/*
+unsigned short Socket::packInBuffer(char c, char buffer[])
+{
+	char* ptr = buffer;
+	*(ptr++) = c;
+	return ptr - buffer;
+}
+
+unsigned short Socket::packInBuffer(double d, char buffer[])
+{
+	unsigned long long *netValue = (unsigned long long*) buffer;
+	*(netValue++) = htond(d);
+	return (char*)netValue - buffer;	
+}
+
+unsigned short Socket::packInBuffer(time_t t, char buffer[])
+{
+	unsigned long long *netValue = (unsigned long long*) buffer;
+	*(netValue++) = htond(difftime(t, s_refTime));
+	return (char*)netValue - buffer;	
+}
+
+unsigned short Socket::packInBuffer(long i, char buffer[])
+{
+	unsigned long* netValue = (unsigned long*) buffer;
+	*(netValue++) = htonl(i);
+	return (char*)netValue - buffer;	
+}
+
+unsigned short Socket::packInBuffer(short s, char buffer[])
+{
+	unsigned short* netValue = (unsigned short*) buffer;
+	*(netValue++) = htons(s);
+	return (char*)netValue - buffer;
+}
+
+char Socket::unpackCharFromBuffer(char* buf)
+{
+	return *buf;
+}
+
+double Socket::unpackDoubleFromBuffer(char* buf)
+{
+	unsigned long long* ptr = (unsigned long long*)buf;
+	return ntohd(*ptr);
+}
+
+
+time_t Socket::unpackTimeFromBuffer(char* buf)
+{
+	unsigned long long* ptr = (unsigned long long*)buf;
+	return s_refTime + ntohd(*ptr);
+}
+
+
+long Socket::unpackLongFromBuffer(char* buf)
+{
+	unsigned long* ptr = (unsigned long*) buf
+}
+
+
+short Socket::unpackShortFromBuffer(char* buf)
+{
+}
+*/

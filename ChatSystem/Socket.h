@@ -6,18 +6,34 @@
 ///This will wrap the platform-dependent socket code
 class Socket
 {
-protected:
+private:
 	unsigned int m_socketHandle;
 public:
 	typedef unsigned short t_port;
 	Socket();
+
 	bool open(t_port port);
 	void close();
 	bool isOpen() const;
 	bool send(const Address& receiver, const void* data, int size);
 	int receive(Address& sender, void* data, int size);
+	
 	bool initializeSocketSystem();
 	void cleanupSocketSystem();
+
+	/*
+	unsigned short packInBuffer(char c, char buffer[]);
+	unsigned short packInBuffer(double d, char buffer[]);
+	unsigned short packInBuffer(time_t t, char buffer[]);
+	unsigned short packInBuffer(long i, char buffer[]);
+	unsigned short packInBuffer(short s, char buffer[]);
+
+	char unpackCharFromBuffer(char* buf);
+	double unpackDoubleFromBuffer(char* buf);
+	time_t unpackTimeFromBuffer(char* buf);
+	long unpackLongFromBuffer(char* buf);
+	short unpackShortFromBuffer(char* buf);
+	*/
 };
 
 #endif	//SOCKET_H now defined
