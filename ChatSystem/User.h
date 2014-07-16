@@ -1,7 +1,7 @@
 #ifndef USER_H
 #define USER_H
 
-#include "Message.h"
+#include "Packable.h"
 #include "Address.h"
 
 #include <string>
@@ -17,19 +17,28 @@ public:
 private:
 	Address m_address;
 	t_nickType m_nick;
-	
-	std::list<Message *> messageList;
+	unsigned short m_maxMessageSent;
 
 public:
 
 	User() {}
 	User(Address address) : m_address(address) {}
 
-	Address getAddress() const { return m_address; }
-	void setAddress(Address address) { m_address = address;}
+	inline Address getAddress() const { return m_address; }
+	inline void setAddress(Address address) { m_address = address;}
 
-	t_nickType getNick() const { return m_nick;}
-	void setNick(t_nickType newNick) { m_nick = newNick;}
+	inline t_nickType getNick() const { return m_nick;}
+	inline void setNick(t_nickType newNick) { m_nick = newNick;}
+
+	inline unsigned short getMaxMessageSent() const { return m_maxMessageSent; }
+	inline void setMaxMessageSent(unsigned short newMax) { m_maxMessageSent = newMax; }
+	inline void updateMaxMessageSent(unsigned short newMax)
+	{
+		if(m_maxMessageSent < newMax)
+		{
+			m_maxMessageSent = newMax;
+		}
+	}
 
 	virtual int pack(char buffer[]) const;
 	virtual void unpack(char buffer[], int bufSize);
@@ -43,9 +52,9 @@ public:
 
 struct UserComparator
 {
-	bool operator()(const User* const lhs , const User* const rhs) const { return lhs -> getAddress() < rhs -> getAddress(); }
+	inline bool operator()(const User* const lhs , const User* const rhs) const { return lhs -> getAddress() < rhs -> getAddress(); }
 };
 
 
 
-#endif
+#endif //USER_H

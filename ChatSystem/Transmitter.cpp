@@ -22,13 +22,18 @@ bool Transmitter::initTransmitter(Socket::t_port port)
 
 bool Transmitter::sendDataToPeers(Packable &data)
 {
-	char packetData[Packable::MAX_PACKET_SIZE];
-	int packetSize = data.pack(packetData);
-
-	for(DataManager::t_usersList::iterator uIter = DataManager::getUserIterator(); uIter != DataManager::getUserIteratorEnd(); ++uIter)
+	DataManager::t_usersList::iterator uIter = DataManager::getUserIterator();
+	if(uIter != DataManager::getUserIteratorEnd())	//skip everyithing if peers list is empty
 	{
-		//TODO handle send failures
-		s_socket.send( (*uIter) -> getAddress(), packetData, packetSize);
+		char packetData[Packable::MAX_PACKET_SIZE];
+		memset(packetData, 0, Packable::MAX_PACKET_SIZE);
+		int packetSize = data.pack(packetData);
+
+		for(; uIter != DataManager::getUserIteratorEnd(); ++uIter)
+		{
+			//TODO handle send failures
+			s_socket.send( (*uIter) -> getAddress(), packetData, packetSize);
+		}
 	}
 
 	return true;
@@ -37,6 +42,7 @@ bool Transmitter::sendDataToPeers(Packable &data)
 bool Transmitter::sendDataToAddress(Packable &data, Address address)
 {
 	char packetData[Packable::MAX_PACKET_SIZE];
+	memset(packetData, 0, Packable::MAX_PACKET_SIZE);
 	int packetSize = data.pack(packetData);
 
 	return s_socket.send(address, packetData, packetSize);
@@ -47,6 +53,7 @@ bool Transmitter::sendBcastData(Packable &data)
 	Address address;
 	address.init(255,255,255,255, DataManager::getCurrUser() -> getAddress().getPort());	//using global BCast address: routers don't forward these packets to the outer world
 	char packetData[Packable::MAX_PACKET_SIZE];
+	memset(packetData, 0, Packable::MAX_PACKET_SIZE);
 	int packetSize = data.pack(packetData);
 
 	return s_socket.send(address, packetData, packetSize);

@@ -6,7 +6,7 @@
 #include "DataManager.h"
 #include "PlatformUtils.h"
 
-const double FPS_CAP = 10.0;
+const double FPS_CAP = 60.0;
 const double FRAME_LEN = 1.0/FPS_CAP;
 
 const Socket::t_port DEFAULT_PORT = 30000;
@@ -82,28 +82,20 @@ int main(int argc, char* argv[])
 				DataManager::printUsers();
 				break;
 
-				/*
-			default:
-				
-				if(currPressedKey != 13)
-				{
-					message.message = currPressedKey;
-					std::cout << currPressedKey;
-				}
-				else
-				{
-					message.message = '\n';
-					std::cout << std::endl;
-				}
-				
-				if(!Transmitter::sendMessage(message))
-				{
-					std::cerr << "Failed to send message :(" << currPressedKey << std::endl;
-				}
+			case 'M':
+			case 'm':
+				DataManager::writeNewMessage();	//print all messages after input
+			case 'R':
+			case 'r':
+				DataManager::printMessages();
 				break;
-				*/
+			case '?':
+				PlatformUtils::printCommandList();
+				break;
 			}
 		}
+
+		PlatformUtils::printFooter();
 
 		lastFrameStart = thisFrameStart;
 
