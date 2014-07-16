@@ -10,7 +10,8 @@ DataManager::t_messagesList DataManager::s_messagesList;
 User DataManager::s_currUser;
 double DataManager::s_userBcastTimer = 0;
 
-const double DataManager::USER_BCAST_PERIOD = 10.0;
+const double DataManager::USER_BCAST_PERIOD = 60.0;
+unsigned short DataManager::s_maxMessageSent = 0;
 
 void DataManager::userDataReceived(User* userData)
 {
@@ -20,7 +21,7 @@ void DataManager::userDataReceived(User* userData)
 	//first: if address is MY local address these are my informations, so we can discard them
 	if(currUserAddress == userData -> getAddress())
 	{
-		message << "My data. Discard them.";
+		//message << "My data. Discard them.";
 		delete userData;
 	}
 	else if(currUserAddress.getAddress() || userData -> getNick().compare(s_currUser.getNick()) != 0)	//otherwise if my address is already compiled or this is NOT my nickname
@@ -29,17 +30,18 @@ void DataManager::userDataReceived(User* userData)
 
 		if(iter != s_usersList.end())	//existing user!
 		{
-			message <<  "Fresh data for " << userData->toString();
+			//message <<  "Fresh data for " << userData->toString();
 
 			(**iter).refreshFromOther(*userData);	//refresh with received data
 			delete userData;						//delete received data
 		}
 		else	//not found: must create an entry for it
 		{
-			message <<  "New user! " << userData -> toString();
+			message <<  "New user detected! " << userData -> toString();
 			s_usersList.insert(userData);
 			//reply to new user with your informations
 			Transmitter::sendDataToAddress(s_currUser, userData->getAddress());
+			PlatformUtils::log(message.str());
 		}
 	}
 	else	//otherwise this is my host address, which I miss! :D let's save it
@@ -49,15 +51,38 @@ void DataManager::userDataReceived(User* userData)
 		s_currUser.setAddress(completeAddress);
 		message << "Obtained local address from bcast : " << s_currUser.getAddress().toString();
 		delete userData;
+		PlatformUtils::log(message.str());
 	}
-
-	PlatformUtils::log(message.str());
-
 }
+
 
 void DataManager::messageReceived(Address senderAddress, Message* messageData)
 {
-	//TODO add received message to list
+	User tmp = User(senderAddress);
+	t_usersList::iterator author = s_usersList.find(&tmp);
+	
+	if(author != s_usersList.end())
+	{
+		//check if already received message
+		t_messagesList::iterator check = s_messagesList.find(messageData);
+		if(check == s_messagesList.end())	//not received
+		{
+			s_messagesList.insert(messageData);
+			printMessages();
+		}
+		else //duplicated message
+		{
+			delete messageData;
+		}
+		//TODO send ACK for received message
+	}
+	else //unknown author
+	{
+		std::stringstream message;
+		message << "Received message from unknown author (" << senderAddress.toString();
+		PlatformUtils::log(message.str());
+		//TODO send USER_NACK package, in order to trigger a user data resend from author
+	}
 }
 
 void DataManager::cleanup()
@@ -77,7 +102,7 @@ void DataManager::update(double elapsed)
 {
 	if((s_userBcastTimer -= elapsed) <= 0)
 	{
-		PlatformUtils::log("Sending user info on the net...");
+		//PlatformUtils::log("Sending user info on the net...");
 
 		s_userBcastTimer = USER_BCAST_PERIOD;
 
@@ -91,5 +116,42 @@ void DataManager::printUsers()
 	for(t_usersList::iterator iter = s_usersList.begin(); iter != s_usersList.end(); ++iter)
 	{
 		std::cout << (*iter) -> toString() << std::endl;
+	}
+}
+
+const unsigned short DataManager::MAX_MESSAGE_PRINT = 8;
+
+void DataManager::printMessages(unsigned short howMany)
+{
+	int i;
+	t_messagesList::iterator mIter;
+	std::string output = "";
+	std::stringstream message;
+	for(i = 0, mIter = s_messagesList.begin(); i < howMany && mIter != s_messagesList.end(); ++i, ++mIter)
+	{
+		message.str("");	//empty stream
+		message << (*mIter) -> getAuthor() -> getNick() << " : " << (*mIter) -> getMessage() << std::endl;
+		output = message.str().append(output);
+	}
+
+	std::cout << std::endl << "*************************************" << std::endl << std::endl << output << std::endl << "*************************************" << std::endl;
+}
+
+void DataManager::writeNewMessage()
+{
+	Message* newMessage = new Message();
+	std::string text;
+	std::cout << "Message text (max " << Message::MAX_MESSAGE_LEN << " chars): ";
+	std::cin >> text;
+	if(!text.empty())
+	{
+		newMessage -> setMessage(text.substr(0, Message::MAX_MESSAGE_LEN));
+		newMessage -> setAuthor(&s_currUser);
+		s_messagesList.insert(newMessage);
+		Transmitter::sendDataToPeers(*newMessage);
+	}
+	else	//don't send empty messages
+	{
+		delete newMessage;
 	}
 }
