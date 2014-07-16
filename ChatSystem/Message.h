@@ -36,7 +36,7 @@ public:
 
 	virtual int pack(char buffer[]) const;
 	virtual void unpack(char buffer[], int bufSize);
-	virtual t_dataType getDataType() const { return t_dataType::MessageType;}
+	virtual t_dataType getDataType() const { return t_dataType::MessageData;}
 
 	inline bool operator< (const Message &other) const		
 	{ 

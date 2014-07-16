@@ -7,8 +7,10 @@ public:
 
 	typedef enum DataTypeEnum
 	{
-		MessageType = 0,
-		UserType,
+		MessageData = 0,
+		UserData,
+		MessageAck,
+		UserAck
 	} t_dataType;
 
 	static const unsigned short MAX_PACKET_SIZE = 256;

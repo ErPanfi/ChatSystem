@@ -43,7 +43,7 @@ public:
 	virtual int pack(char buffer[]) const;
 	virtual void unpack(char buffer[], int bufSize);
 	
-	virtual t_dataType getDataType() const { return t_dataType::UserType;}
+	virtual t_dataType getDataType() const { return t_dataType::UserData;}
 
 	void refreshFromOther(User &other);
 

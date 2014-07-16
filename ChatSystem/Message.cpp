@@ -7,7 +7,7 @@ int Message::pack(char buffer[]) const
 	char* bufferSentinel = buffer;
 	strcpy_s(bufferSentinel, CHAT_PROTO_NBYTES, CHAT_PROTO_ID);
 
-	*(bufferSentinel += CHAT_PROTO_NBYTES) = (char)t_dataType::MessageType;
+	*(bufferSentinel += CHAT_PROTO_NBYTES) = (char)getDataType();
 	++bufferSentinel;
 
 	unsigned long netSendTime = Socket::host2network(m_sendingTime);
