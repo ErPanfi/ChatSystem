@@ -41,6 +41,14 @@ short initFromArgs(int argc, char* argv[])
 
 	DataManager::getCurrUser() -> setNick(myNick);
 
+	//other initializations
+	PlatformUtils::init();
+
+	//clear stdin
+	std::cout << "Starting chat..." << std::endl;
+	getchar();
+	std::cin.clear();
+
 	return 0;
 }
 
@@ -55,6 +63,7 @@ int main(int argc, char* argv[])
 
 	time_t thisFrameStart, lastFrameStart, currTime;
 
+	PlatformUtils::printFooter();
 	time(&lastFrameStart);
 
 	bool doLoop = true;
@@ -79,7 +88,9 @@ int main(int argc, char* argv[])
 
 			case 'U':
 			case 'u':
+				std::cout << std::endl << std::endl;
 				DataManager::printUsers();
+				PlatformUtils::printFooter();
 				break;
 
 			case 'M':
@@ -87,15 +98,19 @@ int main(int argc, char* argv[])
 				DataManager::writeNewMessage();	//print all messages after input
 			case 'R':
 			case 'r':
+				std::cout << std::endl << std::endl;
 				DataManager::printMessages();
+				PlatformUtils::printFooter();
 				break;
 			case '?':
+				std::cout << std::endl << std::endl;
 				PlatformUtils::printCommandList();
+				PlatformUtils::printFooter();
 				break;
 			}
 		}
 
-		PlatformUtils::printFooter();
+
 
 		lastFrameStart = thisFrameStart;
 
