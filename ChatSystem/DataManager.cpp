@@ -32,17 +32,19 @@ void DataManager::userDataReceived(User* userData)
 		{
 			//message <<  "Fresh data for " << userData->toString();
 
-			(**iter).refreshFromOther(*userData);	//refresh with received data
+			(**iter).refreshFromOther(*userData);	//refresh with received data				
+
 			delete userData;						//delete received data
+
 		}
 		else	//not found: must create an entry for it
 		{
 			message <<  "New user detected! " << userData -> toString();
 			s_usersList.insert(userData);
-			//reply to new user with your informations
-			Transmitter::sendDataToAddress(s_currUser, userData->getAddress());
 			PlatformUtils::log(message.str());
 		}
+
+		//reply to sender is handled by transmitter object
 	}
 	else	//otherwise this is my host address, which I miss! :D let's save it
 	{
