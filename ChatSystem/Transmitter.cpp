@@ -48,6 +48,16 @@ bool Transmitter::sendDataToAddress(Packable &data, Address address)
 	return s_socket.send(address, packetData, packetSize);
 }
 
+bool Transmitter::sendDataToAddress(Packable &data, Address address, Packable::t_dataType dataType)
+{
+	char packetData[Packable::MAX_PACKET_SIZE];
+	memset(packetData, 0, Packable::MAX_PACKET_SIZE);
+	int packetSize = data.pack(packetData);
+	packetData[Packable::CHAT_PROTO_NBYTES] = (char) dataType;	//overwrite type byte
+
+	return s_socket.send(address, packetData, packetSize);
+}
+
 bool Transmitter::sendBcastData(Packable &data)
 {
 	Address address;
@@ -80,12 +90,14 @@ void Transmitter::receiveData()
 	{
 		switch (res)
 		{
-		case Packable::t_dataType::MessageType:
+		case Packable::t_dataType::MessageData:
 			messageData = new Message();
 			messageData  -> unpack(packetData, packetSize);
 			DataManager::messageReceived(senderAddress, messageData);
 			break;
-		case Packable::t_dataType::UserType:
+		case Packable::t_dataType::UserData:	//if this has been received the sender is waiting for an ack. Send him.
+			sendDataToAddress(*DataManager::getCurrUser(), senderAddress, Packable::t_dataType::UserAck);
+		case Packable::t_dataType::UserAck:		//otherwise what we received is already an ack to our request
 			userData = new User(senderAddress);
 			userData -> unpack(packetData, packetSize);
 			DataManager::userDataReceived(userData);			

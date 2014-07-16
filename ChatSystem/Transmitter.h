@@ -12,6 +12,10 @@ class Transmitter
 
 private:
 	static Socket s_socket;
+
+	//service method
+	static bool sendDataToAddress(Packable &data, Address address, Packable::t_dataType dataType);
+
 public:	
 	//initialization step
 	static bool initTransmitter(Socket::t_port port);
