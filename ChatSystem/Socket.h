@@ -21,6 +21,9 @@ public:
 	bool initializeSocketSystem();
 	void cleanupSocketSystem();
 
+	static unsigned long host2network(unsigned long l);
+	static unsigned long network2host(unsigned long l);
+
 	/*
 	unsigned short packInBuffer(char c, char buffer[]);
 	unsigned short packInBuffer(double d, char buffer[]);

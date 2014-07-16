@@ -26,7 +26,21 @@ PlatformUtils::t_relativeTime PlatformUtils::time2relative(time_t absTime)
 		time(&absTime);
 	}
 
-	return (t_relativeTime) difftime(absTime, s_timeRef);
+	double res = difftime(absTime, s_timeRef);
+	t_relativeTime ret = (t_relativeTime) res;
+
+	return ret;
+}
+
+std::string PlatformUtils::relativeTime2str(t_relativeTime rel)
+{
+	char buffer[30];
+	time_t relRaw = s_timeRef + rel;
+	struct tm *relTime = localtime(&relRaw);
+	strftime(buffer, 30, "%H:%M:%S", relTime);
+	//delete relTime;
+
+	return std::string(buffer);
 }
 
 // returns 0 if no key pressed
@@ -55,7 +69,7 @@ void PlatformUtils::log(std::string message)
 
 void PlatformUtils::printFooter()
 {
-	std::cout << "Type command key (\'?\' for command list) : ";
+	std::cout << "Type command key (\'?\' for command list)" << std::endl;
 }
 
 void PlatformUtils::printCommandList()

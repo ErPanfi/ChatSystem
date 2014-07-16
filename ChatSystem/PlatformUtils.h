@@ -18,6 +18,7 @@ public:
 	typedef unsigned long t_relativeTime;
 	static void init();
 	static t_relativeTime time2relative(time_t absTime = 0);
+	static std::string relativeTime2str(t_relativeTime rel);
 
 	static void printFooter();
 	static void printCommandList();

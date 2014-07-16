@@ -41,7 +41,7 @@ public:
 	inline bool operator< (const Message &other) const		
 	{ 
 		return (
-					m_sendingTime > other.m_sendingTime ||	//the lesser message is the recentmost one
+					m_sendingTime < other.m_sendingTime ||	//the lesser message is the recentmost one
 					(
 						m_sendingTime == other.m_sendingTime && 
 						struct UserComparator()(m_author, other.m_author)
@@ -52,7 +52,7 @@ public:
 
 struct MessageComparator
 {
-	inline bool operator()(const Message* const &lhs, const Message* const &rhs) { return lhs < rhs; }
+	inline bool operator()(const Message* const &lhs, const Message* const &rhs) { return (*lhs) < (*rhs); }
 };
 
 #endif //MESSAGE_H

@@ -119,6 +119,16 @@ int Socket::receive(Address& sender, void* data, int size)
 	return receivedBytes;
 }
 
+unsigned long Socket::host2network(unsigned long l)
+{
+	return htonl(l);
+}
+
+unsigned long Socket::network2host(unsigned long l)
+{
+	return ntohl(l);
+}
+
 /*
 unsigned short Socket::packInBuffer(char c, char buffer[])
 {
