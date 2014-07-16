@@ -1,6 +1,7 @@
 #include "DataManager.h"
 #include "Transmitter.h"
 #include "PlatformUtils.h"
+#include "MessageAck.h"
 
 #include <iostream>
 #include <sstream>
@@ -55,7 +56,6 @@ void DataManager::userDataReceived(User* userData)
 	}
 }
 
-
 void DataManager::messageReceived(Address senderAddress, Message* messageData)
 {
 	User tmp = User(senderAddress);
@@ -75,14 +75,33 @@ void DataManager::messageReceived(Address senderAddress, Message* messageData)
 		{
 			delete messageData;
 		}
-		//TODO send ACK for received message
 	}
 	else //unknown author
 	{
 		std::stringstream message;
-		message << "Received message from unknown author (" << senderAddress.toString();
+		message << "Received message from unknown author (" << senderAddress.toString() << ")";
 		PlatformUtils::log(message.str());
-		//TODO send USER_NACK package, in order to trigger a user data resend from author
+	}
+
+	//send ack/nack to author
+	Transmitter::sendDataToAddress(MessageAck(messageData -> getMessageNum(), author == s_usersList.end()), senderAddress);
+}
+
+void DataManager::messageAckReceived(Address senderAddress, MessageAck* ack)
+{
+	User tmp = User(senderAddress);
+	t_usersList::iterator author = s_usersList.find(&tmp);
+
+	if(author != s_usersList.end())
+	{
+		(*author) -> ackReceivedForMessage(ack -> getMessageNum());
+	}
+	else	//unknown author (how is it even possible? :-| )
+	{
+		std::stringstream message;
+		message << "Received message ack from unknown author (" << senderAddress.toString() << ") for message " << ack->getMessageNum();
+		PlatformUtils::log(message.str());		
+		Transmitter::sendDataToAddress(MessageAck(0, true), senderAddress);	//resend me your data, please
 	}
 }
 
@@ -139,7 +158,7 @@ void DataManager::printMessages(unsigned short howMany)
 
 void DataManager::writeNewMessage()
 {
-	Message* newMessage = new Message();
+	Message* newMessage = new Message(++s_currUser.m_maxMessageAcked);
 	std::string text;
 	std::cout << "Message text (max " << Message::MAX_MESSAGE_LEN << " chars): ";
 	getline(std::cin, text);
@@ -153,5 +172,6 @@ void DataManager::writeNewMessage()
 	else	//don't send empty messages
 	{
 		delete newMessage;
+		--s_currUser.m_maxMessageAcked;
 	}
 }

@@ -17,11 +17,19 @@ private:
 	t_message m_message;
 	PlatformUtils::t_relativeTime m_sendingTime;
 	User *m_author;
+	t_messageNum m_messageNum;
 
 public:
 
 	Message()
+		: m_sendingTime(0)
+		, m_messageNum(0)
+	{
+	}
+
+	Message(t_messageNum num)
 		: m_sendingTime(PlatformUtils::time2relative())
+		, m_messageNum(num)
 	{
 	}
 
@@ -33,6 +41,8 @@ public:
 
 	inline User* getAuthor() const { return m_author; }
 	inline void setAuthor(User* auth) { m_author = auth; }
+
+	inline t_messageNum getMessageNum() const { return m_messageNum; }
 
 	virtual int pack(char buffer[]) const;
 	virtual void unpack(char buffer[], int bufSize);

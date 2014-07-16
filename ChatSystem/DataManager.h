@@ -3,6 +3,7 @@
 
 #include "User.h"
 #include "Message.h"
+#include "MessageAck.h"
 
 #include <list>
 #include <set>
@@ -36,6 +37,7 @@ public:
 
 	//handle received message data
 	static void messageReceived(Address senderAddress, Message* messageData);
+	static void messageAckReceived(Address senderAddress, MessageAck* ack);
 	static t_messagesList::iterator getMessageIterator() { return s_messagesList.begin();}
 	static t_messagesList::iterator getMessageIteratorEnd() { return s_messagesList.end();}
 	
