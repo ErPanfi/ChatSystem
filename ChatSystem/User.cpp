@@ -36,13 +36,17 @@ std::string User::toString() const
 	return std::string(m_nick) + "(" + m_address.toString() + ")";
 }
 
-void User::ackReceivedForMessage(unsigned short acked)
+void User::ackReceivedForMessage(t_messageNum acked)
 {
+	/*
 	short x = m_maxMessageAcked;
 	x -= acked;
 	short y = 8*sizeof(t_ackMask);
-	if(x <= y)	//don't update mask for ack that don't fit in
+	if(x <= y)	
+	*/
+	if(m_maxMessageAcked - acked <= 8*sizeof(t_ackMask))
 	{
+		//don't update mask for ack that don't fit in
 		if(acked > m_maxMessageAcked)
 		{
 			m_ackMask = (m_ackMask << (acked - m_maxMessageAcked)) ;

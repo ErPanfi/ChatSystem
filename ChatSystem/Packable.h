@@ -27,7 +27,7 @@ public:
 };
 
 //some types which are common to all packable classes are declared here
-typedef unsigned short t_messageNum;
+typedef short t_messageNum;
 
 
 #endif

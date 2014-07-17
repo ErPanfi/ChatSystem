@@ -48,7 +48,7 @@ public:
 
 	inline unsigned short getMaxMessageSent() const { return m_maxMessageAcked; }
 	inline void setMaxMessageSent(unsigned short newMax) { m_maxMessageAcked = newMax; }
-	void ackReceivedForMessage(unsigned short acked);
+	void ackReceivedForMessage(t_messageNum acked);
 
 	virtual int pack(char buffer[]) const;
 	virtual void unpack(char buffer[], int bufSize);
@@ -56,6 +56,15 @@ public:
 	virtual t_dataType getDataType() const { return t_dataType::UserData;}
 
 	void refreshFromOther(User &other);
+
+	inline bool shouldResendMessage(t_messageNum messageNum) const
+	{
+		return	messageNum < (m_maxMessageAcked - (8 * sizeof(t_ackMask)))		//message is not too old
+			&&	messageNum != m_maxMessageAcked									//message is not already acked (because it's max acked message)
+			&&	(	 messageNum > m_maxMessageAcked								//message is younger that max message acked
+				||	!(m_ackMask & (1 << (m_maxMessageAcked - messageNum - 1)))	//in ackMask there's a zero corresponding to this message
+				);
+	}
 
 	std::string toString() const;
 };
