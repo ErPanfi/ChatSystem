@@ -44,6 +44,9 @@ public:
 	//write new message
 	static void writeNewMessage();
 
+	//obtain peers at which given message should be resended
+	static std::list<User*> missingRecipients(Message* msg);
+
 	//chat data visualization methods
 	static void printUsers();
 	static const unsigned short MAX_MESSAGE_PRINT;

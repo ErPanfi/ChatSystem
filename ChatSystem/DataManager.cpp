@@ -158,7 +158,9 @@ void DataManager::printMessages(unsigned short howMany)
 		output = message.str().append(output);
 	}
 
-	std::cout << std::endl << "*************************************" << std::endl << std::endl << output << std::endl << "*************************************" << std::endl;
+	std::cout	<< std::endl << std::endl << std::endl << std::endl << std::endl //
+				<< std::endl << "*************************************" << std::endl << std::endl << output //
+				<< std::endl << "*************************************" << std::endl;
 }
 
 void DataManager::writeNewMessage()
@@ -179,4 +181,19 @@ void DataManager::writeNewMessage()
 		delete newMessage;
 		--s_currUser.m_maxMessageAcked;
 	}
+}
+
+std::list<User*> DataManager::missingRecipients(Message* msg)
+{
+	std::list<User*> ret;
+
+	for(t_usersList::iterator uIter = s_usersList.begin(); uIter != s_usersList.end(); ++uIter)
+	{
+		if((*uIter) -> shouldResendMessage(msg -> getMessageNum()))
+		{
+			ret.push_back(*uIter);
+		}
+	}
+
+	return ret;
 }

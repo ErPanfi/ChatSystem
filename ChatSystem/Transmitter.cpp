@@ -73,6 +73,7 @@ bool Transmitter::sendBcastData(Packable &data)
 void Transmitter::update(double elapsed)
 {
 	receiveData();
+	tickAndResend(elapsed);
 }
 
 void Transmitter::receiveData()
@@ -121,5 +122,39 @@ void Transmitter::receiveData()
 			break;
 		}
 		
+	}
+}
+
+Transmitter::t_resendDescriptorList Transmitter::s_resendList;
+const double Transmitter::RESEND_TIMESPAN_SECONDS = 0.75;
+
+void Transmitter::tickAndResend(double elapsed)
+{
+	t_resendDescriptorList::iterator rIter = s_resendList.begin(); 
+	while(rIter != s_resendList.end())
+	{
+		if( (rIter -> resendTimer -= elapsed) <= 0)
+		{
+			std::list<User*> recipients = DataManager::missingRecipients(rIter -> message);
+
+			if(!recipients.empty())
+			{
+				for(std::list<User*>::iterator uIter = recipients.begin(); uIter != recipients.end(); ++uIter)
+				{
+					Transmitter::sendDataToAddress(*(rIter -> message), (*uIter) -> getAddress());
+				}
+
+				rIter -> resendTimer = RESEND_TIMESPAN_SECONDS;	//restore timer
+				++rIter;	//next resend
+			}
+			else
+			{
+				s_resendList.erase(rIter++);	//every recipient is satisfied: remove resend descriptor
+			}
+		}
+		else
+		{
+			++rIter;	//nothing to do: next resend descriptor, please
+		}
 	}
 }
