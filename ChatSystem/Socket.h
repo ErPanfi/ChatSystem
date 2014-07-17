@@ -21,10 +21,10 @@ public:
 	bool initializeSocketSystem();
 	void cleanupSocketSystem();
 
-	static unsigned long host2network(unsigned long l);
-	static unsigned long network2host(unsigned long l);
-	static unsigned short host2network(unsigned short s);
-	static unsigned short network2host(unsigned short s);
+	static unsigned long host2network(long l);
+	static long network2host(unsigned long l);
+	static unsigned short host2network(short s);
+	static short network2host(unsigned short s);
 
 	/*
 	unsigned short packInBuffer(char c, char buffer[]);

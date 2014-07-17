@@ -119,22 +119,22 @@ int Socket::receive(Address& sender, void* data, int size)
 	return receivedBytes;
 }
 
-unsigned long Socket::host2network(unsigned long l)
+unsigned long Socket::host2network(long l)
 {
 	return htonl(l);
 }
 
-unsigned long Socket::network2host(unsigned long l)
+long Socket::network2host(unsigned long l)
 {
 	return ntohl(l);
 }
 
-unsigned short Socket::host2network(unsigned short s)
+unsigned short Socket::host2network(short s)
 {
 	return htons(s);
 }
 
-unsigned short Socket::network2host(unsigned short s)
+short Socket::network2host(unsigned short s)
 {
 	return ntohs(s);
 }

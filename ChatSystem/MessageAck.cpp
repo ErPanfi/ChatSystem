@@ -11,7 +11,7 @@ int MessageAck::pack(char buffer[]) const
 {
 	char* bufferSentinel = buffer + Packable::pack(buffer);
 
-	unsigned short mn = Socket::host2network(m_messageNum);
+	unsigned short mn = Socket::host2network((short)m_messageNum);
 	memcpy(bufferSentinel, &mn, sizeof(unsigned short));
 	bufferSentinel += sizeof(unsigned short);
 

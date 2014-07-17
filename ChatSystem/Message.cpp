@@ -6,7 +6,7 @@ int Message::pack(char buffer[]) const
 {
 	char* bufferSentinel = buffer + Packable::pack(buffer);
 
-	unsigned long netSendTime = Socket::host2network(m_sendingTime);
+	unsigned long netSendTime = Socket::host2network((short)m_sendingTime);
 	memcpy(bufferSentinel, &netSendTime, sizeof(unsigned long));
 	bufferSentinel += sizeof(unsigned long);
 
