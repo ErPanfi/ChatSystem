@@ -148,14 +148,17 @@ void DataManager::printMessages(unsigned short howMany)
 	int i;
 	t_messagesList::iterator mIter;
 	std::stringstream message;
+	std::string output = "";
 	for(i = 0, mIter = s_messagesList.begin(); i < howMany && mIter != s_messagesList.end(); ++i, ++mIter)
 	{
+		message.str("");
 		message << "(" << PlatformUtils::relativeTime2str((*mIter) -> getSendingTime()) << ") " //
 				<< (*mIter) -> getAuthor() -> getNick() << " : " //
 				<< (*mIter) -> getMessage() << std::endl;
+		output = message.str().append(output);
 	}
 
-	std::cout << std::endl << "*************************************" << std::endl << std::endl << message.str() << std::endl << "*************************************" << std::endl;
+	std::cout << std::endl << "*************************************" << std::endl << std::endl << output << std::endl << "*************************************" << std::endl;
 }
 
 void DataManager::writeNewMessage()
