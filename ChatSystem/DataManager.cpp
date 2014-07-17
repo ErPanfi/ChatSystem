@@ -2,6 +2,7 @@
 #include "Transmitter.h"
 #include "PlatformUtils.h"
 #include "MessageAck.h"
+#include "MessageNack.h"
 
 #include <iostream>
 #include <sstream>
@@ -63,6 +64,7 @@ void DataManager::messageReceived(Address senderAddress, Message* messageData)
 	
 	if(author != s_usersList.end())
 	{
+		t_messageNum mn = messageData -> getMessageNum();
 		messageData -> setAuthor(*author);
 		//check if already received message
 		t_messagesList::iterator check = s_messagesList.find(messageData);
@@ -75,16 +77,16 @@ void DataManager::messageReceived(Address senderAddress, Message* messageData)
 		{
 			delete messageData;
 		}
+
+		Transmitter::sendDataToAddress(MessageAck(mn), senderAddress);	//send ack
 	}
 	else //unknown author
 	{
 		std::stringstream message;
 		message << "Received message from unknown author (" << senderAddress.toString() << ")";
 		PlatformUtils::log(message.str());
+		Transmitter::sendDataToAddress(MessageNack(), senderAddress);	//send nack
 	}
-
-	//send ack/nack to author
-	Transmitter::sendDataToAddress(MessageAck(messageData -> getMessageNum(), author == s_usersList.end()), senderAddress);
 }
 
 void DataManager::messageAckReceived(Address senderAddress, MessageAck* ack)
@@ -101,7 +103,7 @@ void DataManager::messageAckReceived(Address senderAddress, MessageAck* ack)
 		std::stringstream message;
 		message << "Received message ack from unknown author (" << senderAddress.toString() << ") for message " << ack->getMessageNum();
 		PlatformUtils::log(message.str());		
-		Transmitter::sendDataToAddress(MessageAck(0, true), senderAddress);	//resend me your data, please
+		Transmitter::sendDataToAddress(MessageNack(), senderAddress);	//resend me your data, please
 	}
 }
 
