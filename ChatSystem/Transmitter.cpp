@@ -22,19 +22,26 @@ bool Transmitter::initTransmitter(Socket::t_port port)
 
 bool Transmitter::sendDataToPeers(Packable &data)
 {
-	char packetData[Packable::MAX_PACKET_SIZE];
-	memset(packetData, 0, Packable::MAX_PACKET_SIZE);
-	int packetSize = data.pack(packetData);
-
 	DataManager::t_usersList::iterator uIter = DataManager::getUserIterator();
 	if(uIter != DataManager::getUserIteratorEnd())	//skip everyithing if peers list is empty
 	{
+		char packetData[Packable::MAX_PACKET_SIZE];
+		memset(packetData, 0, Packable::MAX_PACKET_SIZE);
+		int packetSize = data.pack(packetData);
 
 		for(; uIter != DataManager::getUserIteratorEnd(); ++uIter)
 		{
-			//TODO handle send failures
 			s_socket.send( (*uIter) -> getAddress(), packetData, packetSize);
 		}
+
+	}
+
+	//add messages to resend list
+	if(data.getDataType() == Packable::t_dataType::MessageData)
+	{
+		t_resendDescriptor desc;
+		desc.message = (Message*) &data;
+		s_resendList.push_back(desc);
 	}
 
 	return true;
@@ -133,7 +140,8 @@ void Transmitter::tickAndResend(double elapsed)
 	t_resendDescriptorList::iterator rIter = s_resendList.begin(); 
 	while(rIter != s_resendList.end())
 	{
-		if( (rIter -> resendTimer -= elapsed) <= 0)
+		rIter -> resendTimer -= elapsed;
+		if( (rIter -> resendTimer) <= 0)
 		{
 			std::list<User*> recipients = DataManager::missingRecipients(rIter -> message);
 
