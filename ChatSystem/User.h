@@ -59,10 +59,10 @@ public:
 
 	inline bool shouldResendMessage(t_messageNum messageNum) const
 	{
-		return	messageNum < (m_maxMessageAcked - (8 * sizeof(t_ackMask)))		//message is not too old
-			&&	messageNum != m_maxMessageAcked									//message is not already acked (because it's max acked message)
-			&&	(	 messageNum > m_maxMessageAcked								//message is younger that max message acked
-				||	!(m_ackMask & (1 << (m_maxMessageAcked - messageNum - 1)))	//in ackMask there's a zero corresponding to this message
+		return	messageNum < (m_maxMessageAcked - (short)(8 * sizeof(t_ackMask)))	//message is not too old
+			&&	messageNum != m_maxMessageAcked										//message is not already acked (because it's max acked message)
+			&&	(	 messageNum > m_maxMessageAcked									//message is younger that max message acked
+				||	!(m_ackMask & (1 << (m_maxMessageAcked - messageNum - 1)))		//in ackMask there's a zero corresponding to this message
 				);
 	}
 
