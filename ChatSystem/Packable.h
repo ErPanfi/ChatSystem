@@ -19,7 +19,7 @@ public:
 	static const char CHAT_PROTO_ID[CHAT_PROTO_NBYTES];
 
 	virtual int pack(char buffer[]) const;
-	virtual void unpack(char buffer[], int bufSize) = 0;
+	virtual void unpack(char buffer[], int bufSize) {}
 	
 	virtual t_dataType getDataType() const = 0;
 	
