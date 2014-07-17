@@ -44,7 +44,7 @@ void User::ackReceivedForMessage(t_messageNum acked)
 	short y = 8*sizeof(t_ackMask);
 	if(x <= y)	
 	*/
-	if(m_maxMessageAcked - acked <= 8*sizeof(t_ackMask))
+	if(m_maxMessageAcked - acked <= (short)(8*sizeof(t_ackMask)))
 	{
 		//don't update mask for ack that don't fit in
 		if(acked > m_maxMessageAcked)
@@ -55,7 +55,7 @@ void User::ackReceivedForMessage(t_messageNum acked)
 		}
 		else if (acked < m_maxMessageAcked)
 		{
-			m_ackMask |= 1 << (acked - m_maxMessageAcked  - 1);
+		   	m_ackMask |= 1 << (acked - m_maxMessageAcked  - 1);
 		}
 	}
 }
