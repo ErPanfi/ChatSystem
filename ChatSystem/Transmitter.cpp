@@ -22,12 +22,13 @@ bool Transmitter::initTransmitter(Socket::t_port port)
 
 bool Transmitter::sendDataToPeers(Packable &data)
 {
+	char packetData[Packable::MAX_PACKET_SIZE];
+	memset(packetData, 0, Packable::MAX_PACKET_SIZE);
+	int packetSize = data.pack(packetData);
+
 	DataManager::t_usersList::iterator uIter = DataManager::getUserIterator();
 	if(uIter != DataManager::getUserIteratorEnd())	//skip everyithing if peers list is empty
 	{
-		char packetData[Packable::MAX_PACKET_SIZE];
-		memset(packetData, 0, Packable::MAX_PACKET_SIZE);
-		int packetSize = data.pack(packetData);
 
 		for(; uIter != DataManager::getUserIteratorEnd(); ++uIter)
 		{
