@@ -8,9 +8,11 @@ int Message::pack(char buffer[]) const
 
 	unsigned long netSendTime = Socket::host2network(m_sendingTime);
 	memcpy(bufferSentinel, &netSendTime, sizeof(unsigned long));
-	
 	bufferSentinel += sizeof(unsigned long);
 
+	unsigned short mn = Socket::host2network(m_messageNum);
+	memcpy(bufferSentinel, &mn, sizeof(unsigned short));
+	bufferSentinel += sizeof(unsigned short);
 
 	for(int i = 0; i < MAX_MESSAGE_LEN && m_message[i] != '\0' && bufferSentinel - buffer < MAX_PACKET_SIZE - 1; ++i, ++bufferSentinel)
 	{
@@ -31,6 +33,11 @@ void Message::unpack(char buffer[], int bufSize)
 	memcpy(&netTime, bufferPtr, sizeof(unsigned long));
 	m_sendingTime = Socket::network2host(netTime);
 	bufferPtr += sizeof(unsigned long);
+
+	unsigned short mn;
+	memcpy(&mn, bufferPtr, sizeof(unsigned short));
+	m_messageNum = Socket::network2host(mn);
+	bufferPtr += sizeof(unsigned short);
 
 	m_message = t_message(bufferPtr);
 }
