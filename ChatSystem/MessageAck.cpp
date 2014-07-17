@@ -4,14 +4,7 @@
 
 Packable::t_dataType MessageAck::getDataType() const
 {
-	if(m_isNack)
-	{
-		return t_dataType::MessageNack;
-	}
-	else
-	{
-		return t_dataType::MessageAck;
-	}
+	return t_dataType::MessageAck;
 }
 
 int MessageAck::pack(char buffer[]) const
@@ -27,8 +20,6 @@ int MessageAck::pack(char buffer[]) const
 
 void MessageAck::unpack(char buffer[], int bufSize)
 {
-	m_isNack = buffer[CHAT_PROTO_NBYTES] == (char)t_dataType::MessageNack;
-
 	unsigned short mn;
 	memcpy(&mn, buffer + CHAT_PROTO_NBYTES + 1, sizeof(unsigned short));
 	m_messageNum = Socket::network2host(mn);

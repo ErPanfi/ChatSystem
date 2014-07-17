@@ -105,5 +105,8 @@
     <ClInclude Include="MessageAck.h">
       <Filter>ChatData\Headers</Filter>
     </ClInclude>
+    <ClInclude Include="MessageNack.h">
+      <Filter>ChatData\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
