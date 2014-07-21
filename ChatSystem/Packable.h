@@ -12,6 +12,7 @@ public:
 		MessageAck,
 		UserAck,
 		MessageNack,	//this is used when a message arrives from an unknown author (shouldn't happen)
+		COUNT
 	} t_dataType;
 
 	static const unsigned short MAX_PACKET_SIZE = 256;
