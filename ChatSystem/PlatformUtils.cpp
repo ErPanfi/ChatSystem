@@ -3,7 +3,7 @@
 #if PLATFORM==PLATFORM_WIN
 #include <Windows.h>
 #include <conio.h>
-#endif
+#endif	//PLATFORM_WIN
 
 #include <iostream>
 #include <time.h>
@@ -21,7 +21,7 @@ void PlatformUtils::init()
 
 PlatformUtils::t_relativeTime PlatformUtils::time2relative(time_t absTime)
 {
-	if(!absTime)
+	if(!absTime)	//if null time is given use current time
 	{
 		time(&absTime);
 	}
@@ -32,13 +32,14 @@ PlatformUtils::t_relativeTime PlatformUtils::time2relative(time_t absTime)
 	return ret;
 }
 
+//useful to print time
 std::string PlatformUtils::relativeTime2str(t_relativeTime rel)
 {
 	char buffer[30];
 	time_t relRaw = s_timeRef + rel;
 	struct tm *relTime = localtime(&relRaw);
 	strftime(buffer, 30, "%H:%M:%S", relTime);
-	//delete relTime;
+	//delete relTime;	//NO: this is bad, it corrupts system memory used by time library. Keep calm, it won't leak, I promise...
 
 	return std::string(buffer);
 }

@@ -14,6 +14,7 @@ int Message::pack(char buffer[]) const
 	memcpy(bufferSentinel, &mn, sizeof(unsigned short));
 	bufferSentinel += sizeof(unsigned short);
 
+	//this is more versatile than a memcpy of m_message.c_str() and theoretically equals, performance-wise
 	for(int i = 0; i < MAX_MESSAGE_LEN && m_message[i] != '\0' && bufferSentinel - buffer < MAX_PACKET_SIZE - 1; ++i, ++bufferSentinel)
 	{
 		*bufferSentinel = m_message[i];

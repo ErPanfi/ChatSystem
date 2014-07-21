@@ -22,7 +22,6 @@ void DataManager::userDataReceived(User* userData)
 	//first: if address is MY local address these are my informations, so we can discard them
 	if(currUserAddress == userData -> getAddress())
 	{
-		//message << "My data. Discard them.";
 		delete userData;
 	}
 	else if(currUserAddress.getAddress() || userData -> getNick().compare(s_currUser.getNick()) != 0)	//otherwise if my address is already compiled or this is NOT my nickname
@@ -31,8 +30,6 @@ void DataManager::userDataReceived(User* userData)
 
 		if(iter != s_usersList.end())	//existing user!
 		{
-			//message <<  "Fresh data for " << userData->toString();
-
 			(**iter).refreshFromOther(*userData);	//refresh with received data				
 
 			delete userData;						//delete received data

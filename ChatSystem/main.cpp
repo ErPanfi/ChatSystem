@@ -11,7 +11,7 @@ const double FRAME_LEN = 1.0/FPS_CAP;
 
 const Socket::t_port DEFAULT_PORT = 30000;
 
-
+//this is separate in order to drop automatically some temporary variables from the stack once init has finished
 short initFromArgs(int argc, char* argv[])
 {
 	Socket::t_port port = DEFAULT_PORT;
@@ -55,7 +55,7 @@ short initFromArgs(int argc, char* argv[])
 int main(int argc, char* argv[])
 {
 	short retCode;
-	if((retCode = initFromArgs(argc, argv)) < 0)	//this will dump temporary variables once init step is finished
+	if((retCode = initFromArgs(argc, argv)) < 0)	//this will dump temporary variables fromt the stack once init step is finished
 	{
 		getchar();
 		return retCode;
@@ -69,20 +69,24 @@ int main(int argc, char* argv[])
 	bool doLoop = true;
 	while(doLoop)
 	{
+		//mark frame start
 		time(&thisFrameStart);
 
-		double elapsed = difftime(thisFrameStart, lastFrameStart);
+		//confront elapsed time from last frame
+		double elapsed = difftime(thisFrameStart, lastFrameStart);	//first iteration will be of a few milliseconds
 
-		//here goes components update
+		//single components update
 		DataManager::update(elapsed);
 		Transmitter::update(elapsed);
 
+		//parse input
 		char currPressedKey = PlatformUtils::currKeyPressed();
 		if(currPressedKey != PlatformUtils::NO_CHAR_READ)
 		{
+			//which key pressed?
 			switch (currPressedKey)
 			{
-			case 27:	//ESC key pressed
+			case 27:	//ESC key
 				doLoop = false;
 				break;
 
@@ -111,12 +115,13 @@ int main(int argc, char* argv[])
 		}
 
 
-
+		//use this frame start as last frame start for elapsed time calculation
 		lastFrameStart = thisFrameStart;
 
 		time(&currTime);
+		//how much to sleep
 		double toSleep = FRAME_LEN - difftime(currTime, thisFrameStart);
-		if(toSleep < FRAME_LEN && toSleep > 0)
+		if(toSleep < FRAME_LEN && toSleep > 0)	//don't ever sleep for more than a frame, or for a negative time
 		{
 			PlatformUtils::waitForNextFrame(toSleep);
 		}
@@ -124,6 +129,7 @@ int main(int argc, char* argv[])
 
 	std::cout << "Goodbye!" << std::endl;
 
+	//cleanup step
 	DataManager::cleanup();
 	Transmitter::cleanup();
 	

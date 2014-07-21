@@ -12,33 +12,29 @@ public:
 	typedef unsigned short t_port;
 	Socket();
 
-	bool open(t_port port);
+	//open the socket and bind it to given port
+	bool open(t_port port);	
+	//close the socket
 	void close();
+	//check if socket is open
 	bool isOpen() const;
+	//send data throug socket
 	bool send(const Address& receiver, const void* data, int size);
+	//receive data through socket
 	int receive(Address& sender, void* data, int size);
-	
+	//this is mandatory in win, should be called at startup
 	bool initializeSocketSystem();
+	//mandatory in win, should be called at program termination
 	void cleanupSocketSystem();
+
+	/**
+	 * some conversion methods...
+	 */
 
 	static unsigned long host2network(long l);
 	static long network2host(unsigned long l);
 	static unsigned short host2network(short s);
 	static short network2host(unsigned short s);
-
-	/*
-	unsigned short packInBuffer(char c, char buffer[]);
-	unsigned short packInBuffer(double d, char buffer[]);
-	unsigned short packInBuffer(time_t t, char buffer[]);
-	unsigned short packInBuffer(long i, char buffer[]);
-	unsigned short packInBuffer(short s, char buffer[]);
-
-	char unpackCharFromBuffer(char* buf);
-	double unpackDoubleFromBuffer(char* buf);
-	time_t unpackTimeFromBuffer(char* buf);
-	long unpackLongFromBuffer(char* buf);
-	short unpackShortFromBuffer(char* buf);
-	*/
 };
 
-#endif	//SOCKET_H now defined
+#endif	//SOCKET_H

@@ -12,16 +12,23 @@
 class DataManager
 {
 public:
+	//this will make the user list always sorted, and grant O(log n) search operations
 	typedef std::set<User*, struct UserComparator> t_usersList;
+
+	//this will make the user list always sorted, and grant O(log n) search operations.
 	typedef std::set<Message*, struct MessageComparator> t_messagesList;
 
 	static const double USER_BCAST_PERIOD;
 
 private:
-	static t_usersList s_usersList;
+	//all the recognized users. TODO: user disconnection should be detected with keepalive packets
+	static t_usersList s_usersList;	
+	//all the saved messages
 	static t_messagesList s_messagesList;
 
+	//the host user
 	static User s_currUser;	
+	//this countdown is used to broadcast my data every USER_BCAST_PERIOD seconds
 	static double s_userBcastTimer;
 
 public:

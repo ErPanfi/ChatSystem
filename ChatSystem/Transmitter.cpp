@@ -25,6 +25,7 @@ bool Transmitter::sendDataToPeers(Packable &data)
 	DataManager::t_usersList::iterator uIter = DataManager::getUserIterator();
 	if(uIter != DataManager::getUserIteratorEnd())	//skip everyithing if peers list is empty
 	{
+		//pack data only once
 		char packetData[Packable::MAX_PACKET_SIZE];
 		memset(packetData, 0, Packable::MAX_PACKET_SIZE);
 		int packetSize = data.pack(packetData);
@@ -110,7 +111,9 @@ bool Transmitter::sendBcastData(Packable &data)
 
 void Transmitter::update(double elapsed)
 {
+	//each frame check for pending data to be received
 	receiveData();
+	//for each pending resend check if should be performed
 	tickAndResend(elapsed);
 }
 
@@ -129,9 +132,10 @@ void Transmitter::receiveData()
 	int packetSize = s_socket.receive(senderAddress, packetData, Packable::MAX_PACKET_SIZE);
 	if(packetSize > 0 && (res = Packable::validatePackage(packetData, packetSize)) >= 0)
 	{
+		//received valid packet... but which type?
 		switch (res)
 		{
-		case Packable::t_dataType::MessageData:
+		case Packable::t_dataType::MessageData:	//a message! unpack it and forward it do data manager
 			messageData = new Message();
 			messageData  -> unpack(packetData, packetSize);
 			DataManager::messageReceived(senderAddress, messageData);
@@ -139,21 +143,21 @@ void Transmitter::receiveData()
 
 		case Packable::t_dataType::UserData:	//if this has been received the sender is waiting for an ack. Send him.
 			sendDataToAddress(*DataManager::getCurrUser(), senderAddress, Packable::t_dataType::UserAck);
-		case Packable::t_dataType::UserAck:		//otherwise what we received is already an ack to our request
+		case Packable::t_dataType::UserAck:		//otherwise what we received is an ack to our request, so we can simply process it
 			userData = new User(senderAddress);
 			userData -> unpack(packetData, packetSize);
 			DataManager::userDataReceived(userData);			
 			break;
 
-		case Packable::t_dataType::MessageNack:	//sender doesn't know me: send my data
+		case Packable::t_dataType::MessageNack:	//sender doesn't know me: send my data to him as an ack to his request
 			sendDataToAddress(*DataManager::getCurrUser(), senderAddress, Packable::t_dataType::UserAck);
 			break;
-		case Packable::t_dataType::MessageAck:
+		case Packable::t_dataType::MessageAck:	//I received an ack to a message! store it in sender ackmask
 			messageAck = new MessageAck();
 			messageAck -> unpack(packetData, packetSize);
 			DataManager::messageAckReceived(senderAddress, messageAck);
 			break;
-		default:
+		default:	//this packet has not been recognized
 			
 			message << "Unrecognized packet from " << senderAddress.toString() ;
 			PlatformUtils::log(message.str());
@@ -172,12 +176,14 @@ void Transmitter::tickAndResend(double elapsed)
 	while(rIter != s_resendList.end())
 	{
 		rIter -> resendTimer -= elapsed;
-		if( (rIter -> resendTimer) <= 0)
+		if( (rIter -> resendTimer) <= 0)	//it's time for a resend!
 		{
+			//obtain list of user which did not acked the message
 			std::list<User*> recipients = DataManager::missingRecipients(rIter -> message);
 
-			if(!recipients.empty())
+			if(!recipients.empty())	
 			{
+				//resend the message to each user
 				for(std::list<User*>::iterator uIter = recipients.begin(); uIter != recipients.end(); ++uIter)
 				{
 					Transmitter::sendDataToAddress(*(rIter -> message), (*uIter) -> getAddress());
@@ -186,9 +192,9 @@ void Transmitter::tickAndResend(double elapsed)
 				rIter -> resendTimer = RESEND_TIMESPAN_SECONDS;	//restore timer
 				++rIter;	//next resend
 			}
-			else
+			else	//everyone received message!
 			{
-				s_resendList.erase(rIter++);	//every recipient is satisfied: remove resend descriptor
+				s_resendList.erase(rIter++);	//remove resend descriptor, because no resends are necessary for this message
 			}
 		}
 		else

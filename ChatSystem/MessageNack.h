@@ -3,6 +3,7 @@
 
 #include "Packable.h"
 
+//this class represent a nack in response to a message (typically sent when a formally correct message is received from an unrecognized IP address)
 class MessageNack : public Packable
 {
 public:

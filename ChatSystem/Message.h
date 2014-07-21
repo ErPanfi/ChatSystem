@@ -6,17 +6,22 @@
 #include "User.h"
 #include <string>
 
+//This class wraps the message that is sent through the network
 class Message : public Packable
 {
 public:
+	//maximum message length. TODO: support unlimited message length with message split
 	static const unsigned short MAX_MESSAGE_LEN = 140;
 
 	typedef std::string t_message;
 
 private:
-	t_message m_message;
-	PlatformUtils::t_relativeTime m_sendingTime;
+
 	User *m_author;
+	t_message m_message;
+	//this is used to reorder messages when merged in a single list
+	PlatformUtils::t_relativeTime m_sendingTime;
+	//this is used to reorder the messages from the same author and to ack them correctly
 	t_messageNum m_messageNum;
 
 public:
@@ -48,6 +53,7 @@ public:
 	virtual void unpack(char buffer[], int bufSize);
 	virtual t_dataType getDataType() const { return t_dataType::MessageData;}
 
+	//this is useful when using std:: sorted data structures
 	inline bool operator< (const Message &other) const		
 	{ 
 		return (
@@ -60,6 +66,7 @@ public:
 	}
 };
 
+//an external trivial comparator that can be fed on a third party sorted structure
 struct MessageComparator
 {
 	inline bool operator()(const Message* const &lhs, const Message* const &rhs) { return (*lhs) < (*rhs); }
