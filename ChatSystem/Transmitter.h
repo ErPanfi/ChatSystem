@@ -1,6 +1,8 @@
 #ifndef CHAT_SYSTEM_H
 #define CHAT_SYSTEM_H
 
+//#define MESSAGE_CONDITIONAL_SENDING		//this is for packet loss debug
+
 #include "Packable.h"
 #include "Socket.h"
 
@@ -42,6 +44,8 @@ private:
 
 	//receive data
 	static void receiveData();
+
+
 
 public:	
 	//initialization step
