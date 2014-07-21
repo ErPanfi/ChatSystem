@@ -13,7 +13,6 @@ User DataManager::s_currUser;
 double DataManager::s_userBcastTimer = 0;
 
 const double DataManager::USER_BCAST_PERIOD = 60.0;
-unsigned short DataManager::s_maxMessageSent = 0;
 
 void DataManager::userDataReceived(User* userData)
 {

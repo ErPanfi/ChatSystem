@@ -23,7 +23,6 @@ private:
 
 	static User s_currUser;	
 	static double s_userBcastTimer;
-	static unsigned short s_maxMessageSent;
 
 public:
 	//nick g/s
