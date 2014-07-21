@@ -26,7 +26,7 @@ void Socket::cleanupSocketSystem()
 }
 
 Socket::Socket()
-	//TODO : m_socketHandle(INVALID_SOCKET) doesn't work... why?
+	//TODO : m_socketHandle(INVALID_SOCKET) doesn't work... wonder why
 {
 	m_socketHandle = INVALID_SOCKET;
 }
@@ -88,6 +88,7 @@ bool Socket::send(const Address& receiver, const void* data, int size)
 	address.sin_addr.S_un.S_addr = htonl(receiver.getAddress());
 	address.sin_port = htons(receiver.getPort());
 
+	//TODO handle partial packet sending through network
 	int bytesSent = sendto(m_socketHandle, (const char*) data, size, 0, (const sockaddr*) &address, sizeof(sockaddr_in));
 
 	return bytesSent == size;
@@ -101,6 +102,7 @@ int Socket::receive(Address& sender, void* data, int size)
 
 	if(receivedBytes > 0)
 	{
+		//if bytes has been received the sender is notable
 		sender.init(ntohl(fromAddress.sin_addr.S_un.S_addr), ntohs(fromAddress.sin_port));
 	}
 	else
@@ -138,71 +140,3 @@ short Socket::network2host(unsigned short s)
 {
 	return ntohs(s);
 }
-
-
-
-/*
-unsigned short Socket::packInBuffer(char c, char buffer[])
-{
-	char* ptr = buffer;
-	*(ptr++) = c;
-	return ptr - buffer;
-}
-
-unsigned short Socket::packInBuffer(double d, char buffer[])
-{
-	unsigned long long *netValue = (unsigned long long*) buffer;
-	*(netValue++) = htond(d);
-	return (char*)netValue - buffer;	
-}
-
-unsigned short Socket::packInBuffer(time_t t, char buffer[])
-{
-	unsigned long long *netValue = (unsigned long long*) buffer;
-	*(netValue++) = htond(difftime(t, s_refTime));
-	return (char*)netValue - buffer;	
-}
-
-unsigned short Socket::packInBuffer(long i, char buffer[])
-{
-	unsigned long* netValue = (unsigned long*) buffer;
-	*(netValue++) = htonl(i);
-	return (char*)netValue - buffer;	
-}
-
-unsigned short Socket::packInBuffer(short s, char buffer[])
-{
-	unsigned short* netValue = (unsigned short*) buffer;
-	*(netValue++) = htons(s);
-	return (char*)netValue - buffer;
-}
-
-char Socket::unpackCharFromBuffer(char* buf)
-{
-	return *buf;
-}
-
-double Socket::unpackDoubleFromBuffer(char* buf)
-{
-	unsigned long long* ptr = (unsigned long long*)buf;
-	return ntohd(*ptr);
-}
-
-
-time_t Socket::unpackTimeFromBuffer(char* buf)
-{
-	unsigned long long* ptr = (unsigned long long*)buf;
-	return s_refTime + ntohd(*ptr);
-}
-
-
-long Socket::unpackLongFromBuffer(char* buf)
-{
-	unsigned long* ptr = (unsigned long*) buf
-}
-
-
-short Socket::unpackShortFromBuffer(char* buf)
-{
-}
-*/
