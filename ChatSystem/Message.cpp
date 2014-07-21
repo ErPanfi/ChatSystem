@@ -6,7 +6,7 @@ int Message::pack(char buffer[]) const
 {
 	char* bufferSentinel = buffer + Packable::pack(buffer);
 
-	unsigned long netSendTime = Socket::host2network((short)m_sendingTime);
+	unsigned long netSendTime = Socket::host2network((long)m_sendingTime);
 	memcpy(bufferSentinel, &netSendTime, sizeof(unsigned long));
 	bufferSentinel += sizeof(unsigned long);
 
@@ -20,7 +20,7 @@ int Message::pack(char buffer[]) const
 	}
 	*bufferSentinel = '\0';
 
-	//packet structure now is [PROTO_ID, PACKET_TYPE, sending_time, Message_with_delimiter]
+	//packet structure now is [PROTO_ID, PACKET_TYPE, sending_time, message_number, Message_with_delimiter]
 
 	return bufferSentinel - buffer + 1;
 }

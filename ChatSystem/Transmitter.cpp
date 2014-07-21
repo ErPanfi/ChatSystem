@@ -31,7 +31,24 @@ bool Transmitter::sendDataToPeers(Packable &data)
 
 		for(; uIter != DataManager::getUserIteratorEnd(); ++uIter)
 		{
+
+#ifdef MESSAGE_CONDITIONAL_SENDING	//this is for testing message redending  and message reordering
+			std::cout << "Send " << data.getDataType() << "  to " << (*uIter) -> getAddress().toString() << "? (Press 'S' to skip, other key to send)" << std::endl;
+			switch (getchar())
+			{
+			case 's':
+			case 'S':
+				//do nothing
+				break;
+			default:
 			s_socket.send( (*uIter) -> getAddress(), packetData, packetSize);
+				break;
+			}
+#else
+			s_socket.send( (*uIter) -> getAddress(), packetData, packetSize);
+
+#endif // MESSAGE_CONDITIONAL_SENDING
+
 		}
 
 	}
@@ -47,15 +64,28 @@ bool Transmitter::sendDataToPeers(Packable &data)
 	return true;
 }
 
-bool Transmitter::sendDataToAddress(Packable &data, Address address)
+//used for acks and message resending
+bool Transmitter::sendDataToAddress(Packable &data, Address address)	
 {
 	char packetData[Packable::MAX_PACKET_SIZE];
 	memset(packetData, 0, Packable::MAX_PACKET_SIZE);
 	int packetSize = data.pack(packetData);
 
-	return s_socket.send(address, packetData, packetSize);
+#ifdef MESSAGE_CONDITIONAL_SENDING	//this is for testing message redending  and message reordering
+			std::cout << "Send " << data.getDataType() << "  to " << address.toString() << "? (Press 'S' to skip, other key to send)" << std::endl;
+			switch (getchar())
+			{
+			case 's':
+			case 'S':
+				return true;
+				break;
+			}
+#endif // MESSAGE_CONDITIONAL_SENDING
+
+	return s_socket.send( address, packetData, packetSize);
 }
 
+//used for user acks
 bool Transmitter::sendDataToAddress(Packable &data, Address address, Packable::t_dataType dataType)
 {
 	char packetData[Packable::MAX_PACKET_SIZE];
@@ -66,6 +96,7 @@ bool Transmitter::sendDataToAddress(Packable &data, Address address, Packable::t
 	return s_socket.send(address, packetData, packetSize);
 }
 
+//used for broadcasting self username
 bool Transmitter::sendBcastData(Packable &data)
 {
 	Address address;
