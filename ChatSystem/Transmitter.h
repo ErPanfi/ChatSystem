@@ -58,6 +58,9 @@ public:
 
 	//update method
 	static void update(double elapsed);
+
+	//socket closure method
+	static void cleanup();
 };
 
 

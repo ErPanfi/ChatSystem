@@ -197,3 +197,8 @@ void Transmitter::tickAndResend(double elapsed)
 		}
 	}
 }
+
+void Transmitter::cleanup()
+{
+	s_socket.cleanupSocketSystem();
+}
