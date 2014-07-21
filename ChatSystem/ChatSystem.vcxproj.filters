@@ -8,14 +8,8 @@
     <Filter Include="Network">
       <UniqueIdentifier>{8cff1fe6-918b-4d4c-b8f2-1443bccd8436}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ChatData">
-      <UniqueIdentifier>{9c80f182-65cf-487e-9f11-c5b1f8695944}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Network\Headers">
       <UniqueIdentifier>{2998746b-75ad-4874-9c1a-7175c2e61880}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ChatData\Sources">
-      <UniqueIdentifier>{b5cfccc3-f441-41aa-93e5-d613a83d310d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Network\Sources">
       <UniqueIdentifier>{4da4fd5a-8682-4356-98ee-f7e9b8a32a9a}</UniqueIdentifier>
@@ -31,41 +25,57 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="ChatData\Headers">
+    <Filter Include="ChatSystems">
+      <UniqueIdentifier>{9c80f182-65cf-487e-9f11-c5b1f8695944}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ChatSystems\Sources">
+      <UniqueIdentifier>{b5cfccc3-f441-41aa-93e5-d613a83d310d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ChatSystems\Headers">
       <UniqueIdentifier>{2572a416-2e1f-4e93-ab0d-e0ccb1658487}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ChatData">
+      <UniqueIdentifier>{ad1f2b50-1c70-4971-8177-8d150640abc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ChatData\Headers">
+      <UniqueIdentifier>{2ae3fb24-f498-4f90-a198-83f79436c489}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ChatData\Sources">
+      <UniqueIdentifier>{d99d1ef6-6beb-4caa-bdb2-dec88eb702ec}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Misc\Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Address.cpp">
-      <Filter>Network\Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ISocket.cpp">
-      <Filter>Network\Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="WinSocket.cpp">
       <Filter>Network\Sources</Filter>
     </ClCompile>
     <ClCompile Include="PlatformUtils.cpp">
       <Filter>Misc\Sources</Filter>
     </ClCompile>
-    <ClCompile Include="ChatSystem.cpp">
+    <ClCompile Include="Socket.cpp">
+      <Filter>Network\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Transmitter.cpp">
+      <Filter>ChatSystems\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Message.cpp">
+      <Filter>ChatData\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Packable.cpp">
+      <Filter>ChatData\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>ChatData\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="DataManager.cpp">
+      <Filter>ChatSystems\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MessageAck.cpp">
       <Filter>ChatData\Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Address.h">
-      <Filter>Network\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="ISocket.h">
-      <Filter>Network\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Socket.h">
-      <Filter>Network\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="WinSocket.h">
       <Filter>Network\Headers</Filter>
     </ClInclude>
     <ClInclude Include="PlatformDetection.h">
@@ -74,7 +84,28 @@
     <ClInclude Include="PlatformUtils.h">
       <Filter>Misc\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="ChatSystem.h">
+    <ClInclude Include="Socket.h">
+      <Filter>Network\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Transmitter.h">
+      <Filter>ChatSystems\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Message.h">
+      <Filter>ChatData\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Packable.h">
+      <Filter>ChatData\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="User.h">
+      <Filter>ChatData\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DataManager.h">
+      <Filter>ChatSystems\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageAck.h">
+      <Filter>ChatData\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageNack.h">
       <Filter>ChatData\Headers</Filter>
     </ClInclude>
   </ItemGroup>

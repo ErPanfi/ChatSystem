@@ -5,13 +5,51 @@
 #include <conio.h>
 #endif
 
+#include <iostream>
+#include <time.h>
+
+time_t PlatformUtils::s_timeRef;
+
+void PlatformUtils::init()
+{
+	struct tm timeStamp;
+	memset(&timeStamp, 0, sizeof(timeStamp));
+	timeStamp.tm_year = 2014 - 1900;
+
+	s_timeRef = mktime(&timeStamp);	//time reference is 01/01/2014
+}
+
+PlatformUtils::t_relativeTime PlatformUtils::time2relative(time_t absTime)
+{
+	if(!absTime)
+	{
+		time(&absTime);
+	}
+
+	double res = difftime(absTime, s_timeRef);
+	t_relativeTime ret = (t_relativeTime) res;
+
+	return ret;
+}
+
+std::string PlatformUtils::relativeTime2str(t_relativeTime rel)
+{
+	char buffer[30];
+	time_t relRaw = s_timeRef + rel;
+	struct tm *relTime = localtime(&relRaw);
+	strftime(buffer, 30, "%H:%M:%S", relTime);
+	//delete relTime;
+
+	return std::string(buffer);
+}
+
 // returns 0 if no key pressed
 char PlatformUtils::currKeyPressed()
 {
 #if PLATFORM == PLATFORM_WIN
-	if(kbhit())
+	if(_kbhit())
 	{
-		return getch();
+		return _getch();
 	}
 #endif
 	return 0;
@@ -20,8 +58,25 @@ char PlatformUtils::currKeyPressed()
 void PlatformUtils::waitForNextFrame(double seconds)
 {
 #if PLATFORM == PLATFORM_WIN
-		Sleep(seconds*1000);
+		Sleep((unsigned int)(seconds*1000));
 #endif
 }
 
+void PlatformUtils::log(std::string message)
+{
+	std::cout << message << std::endl;
+}
 
+void PlatformUtils::printFooter()
+{
+	std::cout << "Type command key (\'?\' for command list)" << std::endl;
+}
+
+void PlatformUtils::printCommandList()
+{
+	std::cout	<< "'U' : print connected users list" << std::endl //
+				<< "'M' : write a new message (blocks packets reception until input completed)"	<< std::endl //
+				<< "\'R\' print last messages received" << std::endl //
+				<< "\'?\' : print this command list" << std::endl //
+				<< " \'Esc\' : Quit" << std::endl;
+}
