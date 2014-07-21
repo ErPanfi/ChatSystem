@@ -3,6 +3,7 @@
 
 #include "Packable.h"
 
+//This is sent in response to a correctly received message
 class MessageAck : public Packable
 {
 private:

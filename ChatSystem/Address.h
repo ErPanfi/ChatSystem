@@ -3,6 +3,7 @@
 
 #include <string>
 
+//This class wraps IP address. Theoretically this should guarantee ip-version-agnosticness, but as today it only supports ipv4
 class Address
 {
 public:
@@ -49,4 +50,4 @@ public:
 
 };
 
-#endif
+#endif //ADDRESS_H

@@ -16,7 +16,16 @@ int Packable::validatePackage(char buffer[], int bufSize)
 		return -1;
 	}
 
-	return *(buffer + CHAT_PROTO_NBYTES);
+	unsigned char ret = *(buffer + CHAT_PROTO_NBYTES);
+
+	if(ret >= t_dataType::COUNT)	//unrecognized type
+	{
+		return -1;
+	}
+	else
+	{
+		return ret;
+	}
 }
 
 int Packable::pack(char buffer[]) const
