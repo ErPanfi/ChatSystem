@@ -52,7 +52,7 @@ char PlatformUtils::currKeyPressed()
 		return _getch();
 	}
 #endif
-	return 0;
+	return NO_CHAR_READ;
 }
 
 void PlatformUtils::waitForNextFrame(double seconds)
