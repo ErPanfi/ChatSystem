@@ -1,5 +1,5 @@
-#ifndef CHAT_SYSTEM_H
-#define CHAT_SYSTEM_H
+#ifndef TRANSMITTER_H
+#define TRANSMITTER_H
 
 //#define MESSAGE_CONDITIONAL_SENDING		//this is for packet loss debug
 
@@ -64,4 +64,4 @@ public:
 };
 
 
-#endif //CHAT_SYSTEM_H
+#endif //TRANSMITTER_H
